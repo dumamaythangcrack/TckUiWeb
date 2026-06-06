@@ -1,1128 +1,859 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TckExc Executor</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons CDN -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Tailwind Custom Configuration -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        winDark: {
-                            deep: '#0a0a0c',
-                            sidebar: '#0e0e11',
-                            card: '#131317',
-                            cardHover: '#1a1a20',
-                            border: '#222228',
-                            borderActive: '#2f2f38',
-                            accent: '#0078d4',
-                            accentHover: '#1084df',
-                            danger: '#e81123',
-                            dangerHover: '#f13040',
-                            success: '#107c41',
-                            textMuted: '#878790'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Segoe UI', 'SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-                        mono: ['Consolas', 'Fira Code', 'monospace']
-                    }
-                }
-            }
-        }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TckExc</title>
+
+    <!-- Monaco Editor -->
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js">
     </script>
+
+    <!-- Font Awesome (for icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
     <style>
-        /* Custom scrollbar matching premium desktop style */
+        /* ===== RESET & BASE ===== */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        :root {
+            --bg: #0a0a0a;
+            --surface: #111111;
+            --card: #1a1a1a;
+            --card-hover: #202020;
+            --border: #2a2a2a;
+            --border-light: #333333;
+            --text: #f0f0f0;
+            --text-secondary: #9a9a9a;
+            --text-muted: #666666;
+            --accent: #4a9eff;
+            --accent-hover: #3a8eef;
+            --success: #4caf50;
+            --error: #f44336;
+            --warning: #ff9800;
+            --info: #4a9eff;
+            --sidebar-width: 240px;
+            --header-height: 0px;
+            --radius: 8px;
+            --radius-lg: 12px;
+            --shadow: 0 4px 24px rgba(0, 0, 0, .5);
+            --transition: .2s ease;
+            --font: 'Segoe UI Variable', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+        }
+        html,
+        body {
+            height: 100%;
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font);
+            font-size: 14px;
+            line-height: 1.5;
+            overflow: hidden;
+            user-select: none;
+        }
         ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #0a0a0c;
+            background: transparent;
         }
         ::-webkit-scrollbar-thumb {
-            background: #222228;
-            border-radius: 4px;
+            background: #3a3a3a;
+            border-radius: 3px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #2f2f38;
+            background: #555;
         }
-        
-        /* Remove blue outline highlight on focus */
-        *:focus {
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            color: var(--accent-hover);
+        }
+        button {
+            font-family: var(--font);
+            cursor: pointer;
+            border: none;
             outline: none;
+            background: none;
+            color: var(--text);
+            font-size: 13px;
+            transition: var(--transition);
         }
-        
-        /* Ensure no text selection on UI except for the code editor */
-        body {
-            user-select: none;
-            -webkit-user-select: none;
+        input,
+        textarea,
+        select {
+            font-family: var(--font);
+            outline: none;
+            border: none;
+            background: none;
+            color: var(--text);
+        }
+
+        /* ===== LOADING SCREEN ===== */
+        #loading-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity .6s ease, visibility .6s ease;
+        }
+        #loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        #loading-screen .logo {
+            width: 72px;
+            height: 72px;
+            border-radius: 16px;
+            object-fit: contain;
+            margin-bottom: 16px;
+            background: var(--card);
+            padding: 8px;
+        }
+        #loading-screen .brand {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -.5px;
+            margin-bottom: 6px;
+        }
+        #loading-screen .loading-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            min-height: 20px;
+        }
+        #loading-screen .progress-track {
+            width: 280px;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
             overflow: hidden;
-            background-color: #0a0a0c;
         }
-        
-        /* Editor wrapper container setup */
+        #loading-screen .progress-bar {
+            height: 100%;
+            width: 0;
+            background: var(--accent);
+            border-radius: 2px;
+            transition: width .4s ease;
+        }
+        #loading-screen .progress-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 8px;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        /* ===== APP LAYOUT ===== */
+        #app {
+            display: flex;
+            height: 100vh;
+            opacity: 0;
+            transition: opacity .4s ease;
+        }
+        #app.visible {
+            opacity: 1;
+        }
+
+        /* ===== SIDEBAR ===== */
+        #sidebar {
+            width: var(--sidebar-width);
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            z-index: 100;
+        }
+        #sidebar .branding {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 20px 20px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        #sidebar .branding .logo-sm {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            object-fit: contain;
+            background: var(--card);
+            padding: 4px;
+        }
+        #sidebar .branding .brand-name {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -.3px;
+        }
+        #sidebar .nav {
+            flex: 1;
+            padding: 12px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        #sidebar .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 14px;
+            border-radius: var(--radius);
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+        #sidebar .nav-item i {
+            width: 18px;
+            font-size: 15px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        #sidebar .nav-item:hover {
+            background: var(--card);
+            color: var(--text);
+        }
+        #sidebar .nav-item.active {
+            background: var(--card);
+            color: var(--accent);
+        }
+        #sidebar .nav-bottom {
+            padding: 12px 10px 16px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        #sidebar .nav-bottom .nav-item {
+            font-size: 13px;
+        }
+        #sidebar .nav-bottom .nav-item i {
+            font-size: 14px;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        #main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: var(--bg);
+        }
+        #main .page-header {
+            padding: 20px 28px 4px;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -.3px;
+            flex-shrink: 0;
+        }
+        #main .page-content {
+            flex: 1;
+            padding: 16px 28px 28px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* ===== PAGES ===== */
+        .page {
+            display: none;
+            animation: fadeIn .25s ease;
+        }
+        .page.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== DASHBOARD CARDS ===== */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 20px 22px;
+            transition: var(--transition);
+        }
+        .card:hover {
+            border-color: var(--border-light);
+            background: var(--card-hover);
+        }
+        .card .card-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        .card .card-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text);
+            min-height: 32px;
+        }
+        .card .card-value .status-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 10px;
+            vertical-align: middle;
+            background: var(--text-muted);
+        }
+        .card .card-value .status-dot.connected {
+            background: var(--success);
+        }
+        .card .card-value .status-dot.disconnected {
+            background: var(--error);
+        }
+        .card .card-value .status-dot.injected {
+            background: var(--success);
+        }
+        .card .card-value .status-dot.injecting {
+            background: var(--warning);
+        }
+        .card .card-value .status-dot.unknown {
+            background: var(--text-muted);
+        }
+        .card .card-value .status-dot.not-injected {
+            background: var(--error);
+        }
+
+        .card .card-sub {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* ===== RECENT ACTIVITY ===== */
+        .activity-section .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+        .activity-list {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 8px 0;
+            min-height: 120px;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+        .activity-item {
+            padding: 8px 20px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        .activity-item .time {
+            color: var(--text-muted);
+            font-size: 12px;
+            flex-shrink: 0;
+            min-width: 52px;
+        }
+        .activity-item .msg {
+            flex: 1;
+        }
+        .activity-empty {
+            padding: 32px 20px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        /* ===== EXECUTOR TAB ===== */
+        .executor-layout {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 480px;
+        }
+        .executor-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 0 12px 0;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+        }
+        .executor-toolbar .toolbar-btn {
+            padding: 8px 18px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        .executor-toolbar .toolbar-btn:hover {
+            background: var(--card-hover);
+            border-color: var(--border-light);
+        }
+        .executor-toolbar .toolbar-btn.primary {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+        .executor-toolbar .toolbar-btn.primary:hover {
+            background: var(--accent-hover);
+            border-color: var(--accent-hover);
+        }
+        .executor-toolbar .toolbar-btn.danger {
+            color: var(--error);
+        }
+        .executor-toolbar .toolbar-btn.danger:hover {
+            background: rgba(244, 67, 54, .1);
+            border-color: rgba(244, 67, 54, .3);
+        }
+        .executor-toolbar .toolbar-btn i {
+            font-size: 14px;
+        }
+        .executor-editor {
+            flex: 1;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            min-height: 300px;
+            background: #1e1e1e;
+        }
         #monaco-container {
-            height: calc(100% - 48px);
+            width: 100%;
+            height: 100%;
+            min-height: 300px;
+        }
+
+        /* ===== MODAL OVERLAY ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 5000;
+            background: rgba(0, 0, 0, .7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: fadeInOverlay .2s ease;
+        }
+        .modal-overlay.open {
+            display: flex;
+        }
+        @keyframes fadeInOverlay {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        .modal {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            width: 700px;
+            max-width: 94vw;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow);
+            animation: slideUp .25s ease;
+        }
+        @keyframes slideUp {
+            0% {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+        .modal-header h2 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .modal-header .close-btn {
+            font-size: 20px;
+            color: var(--text-secondary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+        .modal-header .close-btn:hover {
+            background: var(--card);
+            color: var(--text);
+        }
+        .modal-body {
+            flex: 1;
+            padding: 20px 24px;
+            overflow-y: auto;
+        }
+        .modal-footer {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 14px 24px;
+            border-top: 1px solid var(--border);
+        }
+        .modal-footer .btn {
+            padding: 8px 20px;
+            border-radius: var(--radius);
+            font-weight: 500;
+            font-size: 13px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+        .modal-footer .btn:hover {
+            background: var(--card-hover);
+            border-color: var(--border-light);
+        }
+        .modal-footer .btn.primary {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+        .modal-footer .btn.primary:hover {
+            background: var(--accent-hover);
+        }
+        .modal-footer .btn:disabled {
+            opacity: .4;
+            cursor: not-allowed;
+        }
+
+        /* ===== PROCESS TABLE ===== */
+        .process-table-wrap {
+            max-height: 360px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+        }
+        .process-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .process-table th {
+            background: var(--card);
+            padding: 10px 14px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .3px;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+        .process-table td {
+            padding: 9px 14px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+        .process-table tr:hover td {
+            background: rgba(255, 255, 255, .02);
+        }
+        .process-table .status-badge {
+            font-size: 12px;
+            padding: 2px 10px;
+            border-radius: 10px;
+            background: rgba(76, 175, 80, .15);
+            color: var(--success);
+            display: inline-block;
+        }
+        .process-table .status-badge.not-running {
+            background: rgba(244, 67, 54, .12);
+            color: var(--error);
+        }
+        .process-table input[type="checkbox"] {
+            accent-color: var(--accent);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        .table-empty {
+            padding: 32px 20px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        /* ===== AUTO EXECUTE ===== */
+        .autoexec-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .autoexec-header .left {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        .autoexec-header .left strong {
+            color: var(--text);
+        }
+        .autoexec-header .actions {
+            display: flex;
+            gap: 8px;
+        }
+        .autoexec-header .actions .btn {
+            padding: 7px 16px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 13px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+        .autoexec-header .actions .btn:hover {
+            background: var(--card-hover);
+            border-color: var(--border-light);
+        }
+        .autoexec-header .actions .btn i {
+            font-size: 13px;
+        }
+        .autoexec-files {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 8px 0;
+            min-height: 120px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .autoexec-file {
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .autoexec-file:last-child {
+            border-bottom: none;
+        }
+        .autoexec-file .name {
+            color: var(--text);
+            font-weight: 500;
+        }
+        .autoexec-file .file-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .autoexec-file .file-actions button {
+            color: var(--text-muted);
+            font-size: 13px;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .autoexec-file .file-actions button:hover {
+            color: var(--error);
+            background: rgba(244, 67, 54, .1);
+        }
+        .autoexec-empty {
+            padding: 32px 20px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        /* ===== SETTINGS ===== */
+        .settings-group {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 8px 0;
+            margin-bottom: 16px;
+        }
+        .setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 22px;
+            border-bottom: 1px solid var(--border);
+        }
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+        .setting-item .info .label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text);
+        }
+        .setting-item .info .desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        .switch {
+            position: relative;
+            width: 42px;
+            height: 24px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
+        .switch .slider {
+            position: absolute;
+            inset: 0;
+            background: var(--border);
+            border-radius: 12px;
+            transition: var(--transition);
+        }
+        .switch .slider::before {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: var(--text-secondary);
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+        .switch input:checked+.slider {
+            background: var(--accent);
+        }
+        .switch input:checked+.slider::before {
+            transform: translateX(18px);
+            background: #fff;
+        }
+
+        /* ===== NOTIFICATIONS ===== */
+        #toast-container {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 99998;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+            max-width: 380px;
             width: 100%;
         }
-    </style>
-</head>
-<body class="text-white h-screen flex flex-col font-sans overflow-hidden bg-winDark-deep">
-
-    <!-- UPGRADED PREMIUM LOADING SCREEN -->
-    <div id="loading-screen" class="fixed inset-0 bg-winDark-deep z-50 flex flex-col items-center justify-center transition-all duration-500 ease-in-out">
-        <!-- Ambient Background Glow -->
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,120,212,0.07)_0%,transparent_65%)] pointer-events-none"></div>
-        
-        <div class="flex flex-col items-center scale-95 animate-fade-in z-10">
-            <!-- Glassmorphism Container with rounded-2xl Logo -->
-            <div class="relative mb-6 p-1 bg-winDark-card/50 border border-winDark-border/80 rounded-2xl shadow-2xl backdrop-blur-md">
-                <div class="absolute -inset-1 bg-gradient-to-r from-winDark-accent to-blue-600 rounded-2xl blur opacity-30 animate-pulse"></div>
-                <img src="https://i.ibb.co/3yzw4Fj7/Chat-GPT-Image-Jun-5-2026-12-37-16-PM.png" alt="TckExc Logo" class="relative w-24 h-24 object-cover rounded-2xl drop-shadow-xl" onerror="this.src='https://placehold.co/100x100?text=TckExc'">
-            </div>
-            
-            <h1 class="text-2xl font-bold tracking-wider mb-2 font-sans bg-gradient-to-r from-white via-zinc-100 to-zinc-400 bg-clip-text text-transparent">TckExc</h1>
-            <p id="loading-status-text" class="text-xs text-winDark-textMuted uppercase tracking-widest mb-5 font-mono">Initializing TckExc...</p>
-            
-            <!-- Sleek Minimalist Loading Bar -->
-            <div class="w-60 h-1 bg-winDark-border rounded-full overflow-hidden p-[1px]">
-                <div id="loading-progress-bar" class="h-full bg-gradient-to-r from-winDark-accent to-blue-500 rounded-full w-0 transition-all duration-300 ease-out"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MAIN APP WRAPPER -->
-    <div class="flex flex-1 h-full w-full overflow-hidden relative">
-        
-        <!-- SIDEBAR -->
-        <aside class="w-64 bg-winDark-sidebar border-r border-winDark-border flex flex-col justify-between p-4 flex-shrink-0">
-            <div>
-                <!-- Brand Header -->
-                <div class="flex items-center space-x-3 px-2 py-3 mb-6">
-                    <img src="https://i.ibb.co/3yzw4Fj7/Chat-GPT-Image-Jun-5-2026-12-37-16-PM.png" alt="TckExc Logo" class="w-8 h-8 object-cover rounded-lg" onerror="this.src='https://placehold.co/32x32?text=T'">
-                    <span class="font-semibold text-lg tracking-wide">TckExc</span>
-                    <span class="bg-winDark-border text-[10px] text-winDark-textMuted px-1.5 py-0.5 rounded uppercase font-mono">v1.0.0</span>
-                </div>
-
-                <!-- Navigation Tabs -->
-                <nav class="space-y-1">
-                    <button onclick="switchTab('dashboard')" id="tab-btn-dashboard" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 bg-winDark-border text-white border border-white/5">
-                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-                        <span>Dashboard</span>
-                    </button>
-                    <button onclick="switchTab('executor')" id="tab-btn-executor" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 text-winDark-textMuted hover:text-white hover:bg-winDark-card/50">
-                        <i data-lucide="terminal" class="w-4 h-4"></i>
-                        <span>Executor</span>
-                    </button>
-                    <button onclick="switchTab('auto-execute')" id="tab-btn-auto-execute" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 text-winDark-textMuted hover:text-white hover:bg-winDark-card/50">
-                        <i data-lucide="folder-sync" class="w-4 h-4"></i>
-                        <span>Auto Execute</span>
-                    </button>
-                    <button onclick="switchTab('settings')" id="tab-btn-settings" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 text-winDark-textMuted hover:text-white hover:bg-winDark-card/50">
-                        <i data-lucide="settings" class="w-4 h-4"></i>
-                        <span>Settings</span>
-                    </button>
-                </nav>
-            </div>
-
-            <!-- Footer links -->
-            <div class="border-t border-winDark-border pt-4 space-y-1">
-                <a href="https://discord.gg/ezHFmB6Jjg" target="_blank" class="flex items-center justify-between px-3 py-2 rounded-lg text-xs text-winDark-textMuted hover:text-white hover:bg-winDark-card transition-colors">
-                    <div class="flex items-center space-x-2">
-                        <i data-lucide="message-square" class="w-3.5 h-3.5 text-[#5865F2]"></i>
-                        <span>Join Community Discord</span>
-                    </div>
-                    <i data-lucide="external-link" class="w-3 h-3 text-winDark-textMuted/60"></i>
-                </a>
-                <a href="#" onclick="event.preventDefault();" class="flex items-center justify-between px-3 py-2 rounded-lg text-xs text-winDark-textMuted hover:text-white hover:bg-winDark-card transition-colors">
-                    <div class="flex items-center space-x-2">
-                        <i data-lucide="globe" class="w-3.5 h-3.5"></i>
-                        <span>Official Website</span>
-                    </div>
-                    <span class="text-[9px] bg-winDark-border px-1 rounded text-winDark-textMuted">WIP</span>
-                </a>
-            </div>
-        </aside>
-
-        <!-- CONTENT AREA -->
-        <main class="flex-1 flex flex-col bg-winDark-deep overflow-hidden">
-            
-            <!-- HEADER / STATUS PANEL -->
-            <header class="h-12 border-b border-winDark-border px-6 flex items-center justify-between bg-winDark-sidebar/30">
-                <div class="flex items-center space-x-2">
-                    <span class="text-xs text-winDark-textMuted uppercase tracking-wider font-mono">Backend Status:</span>
-                    <span id="header-backend-status" class="inline-flex items-center space-x-1.5 px-2 py-0.5 rounded text-[11px] font-semibold bg-amber-500/10 text-amber-500">
-                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-                        <span>WAITING FOR BACKEND</span>
-                    </span>
-                </div>
-                <div class="flex items-center space-x-4 text-xs text-winDark-textMuted">
-                    <div class="flex items-center space-x-1">
-                        <i data-lucide="cpu" class="w-3.5 h-3.5"></i>
-                        <span id="header-cpu-label">API Hooked: No</span>
-                    </div>
-                </div>
-            </header>
-
-            <!-- TABS ROUTER CONTAINER -->
-            <div id="tab-contents-wrapper" class="flex-1 p-6 overflow-y-auto relative">
-                
-                <!-- DASHBOARD TAB -->
-                <section id="tab-dashboard" class="space-y-6 tab-content">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <h2 class="text-xl font-bold tracking-wide">Dashboard</h2>
-                            <p class="text-xs text-winDark-textMuted mt-0.5">Real-time status overview of injector modules and processes.</p>
-                        </div>
-                    </div>
-
-                    <!-- Status KPI Cards -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                        
-                        <!-- Executor Status -->
-                        <div class="bg-winDark-card border border-winDark-border p-4 rounded-xl flex flex-col justify-between h-28 hover:border-winDark-borderActive transition-colors">
-                            <div class="flex justify-between items-start text-winDark-textMuted">
-                                <span class="text-xs font-semibold uppercase tracking-wider">Executor Status</span>
-                                <i data-lucide="terminal" class="w-4 h-4"></i>
-                            </div>
-                            <div class="mt-2">
-                                <p id="kpi-executor-status" class="text-sm font-semibold text-amber-500 uppercase">Waiting for Backend</p>
-                                <p class="text-[10px] text-winDark-textMuted mt-0.5">Core pipeline execution state</p>
-                            </div>
-                        </div>
-
-                        <!-- Injection Status -->
-                        <div class="bg-winDark-card border border-winDark-border p-4 rounded-xl flex flex-col justify-between h-28 hover:border-winDark-borderActive transition-colors">
-                            <div class="flex justify-between items-start text-winDark-textMuted">
-                                <span class="text-xs font-semibold uppercase tracking-wider">Injection Status</span>
-                                <i data-lucide="shield-alert" class="w-4 h-4 text-zinc-500"></i>
-                            </div>
-                            <div class="mt-2">
-                                <p id="kpi-injection-status" class="text-sm font-semibold text-zinc-400 uppercase">Unknown</p>
-                                <p class="text-[10px] text-winDark-textMuted mt-0.5">Target process hook status</p>
-                            </div>
-                        </div>
-
-                        <!-- Connected Clients -->
-                        <div class="bg-winDark-card border border-winDark-border p-4 rounded-xl flex flex-col justify-between h-28 hover:border-winDark-borderActive transition-colors">
-                            <div class="flex justify-between items-start text-winDark-textMuted">
-                                <span class="text-xs font-semibold uppercase tracking-wider">Active Clients</span>
-                                <i data-lucide="users" class="w-4 h-4"></i>
-                            </div>
-                            <div class="mt-2">
-                                <p id="kpi-client-count" class="text-2xl font-bold tracking-tight">0</p>
-                                <p class="text-[10px] text-winDark-textMuted">Total loaded game threads</p>
-                            </div>
-                        </div>
-
-                        <!-- Auto Inject -->
-                        <div class="bg-winDark-card border border-winDark-border p-4 rounded-xl flex flex-col justify-between h-28 hover:border-winDark-borderActive transition-colors">
-                            <div class="flex justify-between items-start text-winDark-textMuted">
-                                <span class="text-xs font-semibold uppercase tracking-wider">Auto Inject</span>
-                                <i data-lucide="zap" class="w-4 h-4 text-amber-500"></i>
-                            </div>
-                            <div class="mt-2 flex items-center justify-between">
-                                <div>
-                                    <p id="kpi-autoinject-status" class="text-sm font-semibold text-zinc-400 uppercase">Disabled</p>
-                                    <p class="text-[10px] text-winDark-textMuted mt-0.5">Detect & inject automatically</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Backend Bridge -->
-                        <div class="bg-winDark-card border border-winDark-border p-4 rounded-xl flex flex-col justify-between h-28 hover:border-winDark-borderActive transition-colors">
-                            <div class="flex justify-between items-start text-winDark-textMuted">
-                                <span class="text-xs font-semibold uppercase tracking-wider">IPC Engine</span>
-                                <i data-lucide="link" class="w-4 h-4"></i>
-                            </div>
-                            <div class="mt-2">
-                                <p id="kpi-ipc-status" class="text-sm font-semibold text-rose-500 uppercase">Disconnected</p>
-                                <p class="text-[10px] text-winDark-textMuted mt-0.5">WebView2 Bridge connection</p>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <!-- Lower Segment Tables -->
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        
-                        <!-- Client Connection Logs -->
-                        <div class="bg-winDark-card border border-winDark-border rounded-xl p-4 flex flex-col h-[320px]">
-                            <div class="flex justify-between items-center pb-3 border-b border-winDark-border mb-3">
-                                <h3 class="text-sm font-bold uppercase tracking-wider flex items-center space-x-2">
-                                    <i data-lucide="monitor" class="w-4 h-4 text-winDark-accent"></i>
-                                    <span>Target Roblox Clients</span>
-                                </h3>
-                                <span id="client-total-badge" class="text-[10px] bg-winDark-border px-2 py-0.5 rounded text-winDark-textMuted font-mono">Total: 0</span>
-                            </div>
-                            <div id="clients-container" class="flex-1 overflow-y-auto space-y-2">
-                                <!-- Empty state by default. Never generate fake clients. -->
-                                <div class="h-full flex flex-col items-center justify-center text-center p-6 text-winDark-textMuted">
-                                    <i data-lucide="inbox" class="w-8 h-8 stroke-1 mb-2"></i>
-                                    <p class="text-xs font-semibold">No Connected Clients Available</p>
-                                    <p class="text-[10px] text-zinc-600 mt-1 max-w-xs">Start a Roblox process and attach TckExc to link API telemetry.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Recent IPC Logs & Injection Activities -->
-                        <div class="bg-winDark-card border border-winDark-border rounded-xl p-4 flex flex-col h-[320px]">
-                            <div class="flex justify-between items-center pb-3 border-b border-winDark-border mb-3">
-                                <h3 class="text-sm font-bold uppercase tracking-wider flex items-center space-x-2">
-                                    <i data-lucide="scroll" class="w-4 h-4"></i>
-                                    <span>Recent Activity Logs</span>
-                                </h3>
-                                <button onclick="clearActivityLogs()" class="text-[10px] hover:text-white text-winDark-textMuted font-medium transition-colors">Clear</button>
-                            </div>
-                            <div id="activities-container" class="flex-1 overflow-y-auto space-y-2 font-mono text-[11px]">
-                                <!-- Empty state by default. Never generate fake activity. -->
-                                <div class="h-full flex flex-col items-center justify-center text-center p-6 text-winDark-textMuted">
-                                    <i data-lucide="clipboard-list" class="w-8 h-8 stroke-1 mb-2"></i>
-                                    <p class="text-xs font-semibold">No Logs Registered</p>
-                                    <p class="text-[10px] text-zinc-600 mt-1 max-w-xs font-sans">Active debug sessions or module calls will be formatted here.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </section>
-
-                <!-- EXECUTOR TAB -->
-                <section id="tab-executor" class="hidden h-full flex flex-col space-y-4 tab-content">
-                    <div class="flex justify-between items-center flex-shrink-0">
-                        <div>
-                            <h2 class="text-xl font-bold tracking-wide">Script Workspace</h2>
-                            <p class="text-xs text-winDark-textMuted mt-0.5">Write, load, and dispatch Lua scripts directly into target processes.</p>
-                        </div>
-                    </div>
-
-                    <!-- Monaco Editor & Toolbar container -->
-                    <div class="flex-1 bg-winDark-card border border-winDark-border rounded-xl overflow-hidden flex flex-col relative min-h-[400px]">
-                        
-                        <!-- Toolbar -->
-                        <div class="h-12 border-b border-winDark-border bg-winDark-sidebar/30 flex items-center justify-between px-3">
-                            <div class="flex items-center space-x-2">
-                                <!-- Trigger Modal -->
-                                <button onclick="openInjectModal()" class="flex items-center space-x-1.5 px-3 py-1.5 bg-winDark-accent hover:bg-winDark-accentHover active:scale-95 text-xs font-semibold rounded-md transition-all">
-                                    <i data-lucide="syringe" class="w-3.5 h-3.5"></i>
-                                    <span>Inject</span>
-                                </button>
-                                
-                                <button onclick="handleExecute()" class="flex items-center space-x-1.5 px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-xs font-semibold rounded-md active:scale-95 transition-all text-white border border-white/5">
-                                    <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
-                                    <span>Execute</span>
-                                </button>
-
-                                <span class="h-4 w-px bg-winDark-border mx-1"></span>
-
-                                <button onclick="clearEditor()" class="flex items-center space-x-1.5 px-2.5 py-1.5 hover:bg-winDark-border text-xs font-medium rounded-md text-winDark-textMuted hover:text-white transition-all">
-                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                                    <span>Clear</span>
-                                </button>
-                            </div>
-
-                            <div class="flex items-center space-x-2">
-                                <button onclick="triggerFileImport()" class="flex items-center space-x-1.5 px-2.5 py-1.5 hover:bg-winDark-border text-xs font-medium rounded-md text-winDark-textMuted hover:text-white transition-all">
-                                    <i data-lucide="folder-open" class="w-3.5 h-3.5"></i>
-                                    <span>Open</span>
-                                </button>
-                                <button onclick="triggerFileExport()" class="flex items-center space-x-1.5 px-2.5 py-1.5 hover:bg-winDark-border text-xs font-medium rounded-md text-winDark-textMuted hover:text-white transition-all">
-                                    <i data-lucide="save" class="w-3.5 h-3.5"></i>
-                                    <span>Save</span>
-                                </button>
-                                <input type="file" id="file-importer" accept=".lua,.txt" class="hidden" onchange="importScriptFile(event)">
-                            </div>
-                        </div>
-
-                        <!-- Editor Canvas Frame -->
-                        <div class="flex-1 relative">
-                            <!-- Monaco dynamic injection target -->
-                            <div id="monaco-container"></div>
-                            
-                            <!-- Custom Loading / Offline Screen for Monaco -->
-                            <div id="editor-fallback" class="absolute inset-0 bg-[#1e1e1e] flex flex-col items-center justify-center text-winDark-textMuted hidden">
-                                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-winDark-accent mb-3"></div>
-                                <p class="text-xs">Initializing Secure Editor Engine...</p>
-                            </div>
-                        </div>
-
-                    </div>
-                </section>
-
-                <!-- AUTO EXECUTE TAB (CHANGED TO LOWERCASE "autoexec") -->
-                <section id="tab-auto-execute" class="hidden space-y-6 tab-content">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <h2 class="text-xl font-bold tracking-wide">Auto Execute (autoexec)</h2>
-                            <p class="text-xs text-winDark-textMuted mt-0.5 font-sans">Manage script packages queued for deployment immediately upon process hook detection.</p>
-                        </div>
-                    </div>
-
-                    <div class="bg-winDark-card border border-winDark-border rounded-xl p-5 space-y-4">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center space-x-2">
-                                <i data-lucide="folder" class="w-5 h-5 text-amber-500"></i>
-                                <span class="text-xs text-winDark-textMuted uppercase font-mono tracking-wider">Root: /autoexec</span>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <button onclick="notify('autoexec', 'Scan initiated.', 'info')" class="flex items-center space-x-1.5 px-3 py-1.5 bg-winDark-border hover:bg-winDark-borderActive text-xs font-medium rounded-lg text-white transition-colors">
-                                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-                                    <span>Refresh Folders</span>
-                                </button>
-                                <button onclick="notify('Feature Locked', 'File upload locked for manual integration. Wire auto-exec script endpoints.', 'warning')" class="flex items-center space-x-1.5 px-3 py-1.5 bg-winDark-accent hover:bg-winDark-accentHover text-xs font-medium rounded-lg text-white transition-colors">
-                                    <i data-lucide="file-plus-2" class="w-3.5 h-3.5"></i>
-                                    <span>Add Payload</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Auto execute files list -->
-                        <div class="border border-winDark-border rounded-lg overflow-hidden bg-winDark-deep">
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="border-b border-winDark-border bg-winDark-card/40 text-[10px] text-winDark-textMuted font-bold uppercase tracking-wider">
-                                        <th class="p-3">File Name</th>
-                                        <th class="p-3">Trigger Method</th>
-                                        <th class="p-3">Weight</th>
-                                        <th class="p-3 text-right">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="autoexec-table-body">
-                                    <!-- Dynamic elements from backend inside autoexec folder. Real UI is empty by default. -->
-                                    <tr>
-                                        <td colspan="4" class="p-10 text-center text-winDark-textMuted">
-                                            <div class="flex flex-col items-center justify-center">
-                                                <i data-lucide="folder-search" class="w-8 h-8 stroke-1 mb-2"></i>
-                                                <p class="text-xs font-semibold">No Auto-Execution Files Loaded</p>
-                                                <p class="text-[10px] text-zinc-600 mt-1 max-w-sm">Files deposited inside your localized executable autoexec directory will show up here to trigger dynamically.</p>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- SETTINGS TAB -->
-                <section id="tab-settings" class="hidden space-y-6 tab-content">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <h2 class="text-xl font-bold tracking-wide">Settings Panel</h2>
-                            <p class="text-xs text-winDark-textMuted mt-0.5">Control pipeline behavior, notifications, and client bindings.</p>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        
-                        <!-- Core Engine Settings -->
-                        <div class="bg-winDark-card border border-winDark-border rounded-xl p-5 space-y-5">
-                            <h3 class="text-xs font-bold tracking-widest text-winDark-textMuted uppercase flex items-center space-x-2">
-                                <i data-lucide="sliders" class="w-4 h-4"></i>
-                                <span>Automation Preferences</span>
-                            </h3>
-
-                            <!-- Switch 1: Auto Inject -->
-                            <div class="flex items-center justify-between p-2 rounded-lg hover:bg-winDark-deep/40 transition-colors">
-                                <div>
-                                    <p class="text-sm font-semibold">Auto Inject Mode</p>
-                                    <p class="text-[10px] text-winDark-textMuted mt-0.5">Launches injector immediately upon detecting game threads.</p>
-                                </div>
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" id="setting-auto-inject" class="sr-only peer" onchange="toggleSettingAutoInject(this.checked)">
-                                    <div class="w-9 h-5 bg-winDark-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-winDark-accent"></div>
-                                </label>
-                            </div>
-
-                            <!-- Switch 2: Global UI Toast Notifications -->
-                            <div class="flex items-center justify-between p-2 rounded-lg hover:bg-winDark-deep/40 transition-colors">
-                                <div>
-                                    <p class="text-sm font-semibold">System Notifications</p>
-                                    <p class="text-[10px] text-winDark-textMuted mt-0.5">Show real-time toast alerts on backend injections/calls.</p>
-                                </div>
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" id="setting-notifications" checked class="sr-only peer" onchange="toggleSettingNotifications(this.checked)">
-                                    <div class="w-9 h-5 bg-winDark-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-winDark-accent"></div>
-                                </label>
-                            </div>
-
-                            <!-- Switch 3: App Theme Toggle -->
-                            <div class="flex items-center justify-between p-2 rounded-lg hover:bg-winDark-deep/40 transition-colors">
-                                <div>
-                                    <p class="text-sm font-semibold">Dark Mode Baseline</p>
-                                    <p class="text-[10px] text-winDark-textMuted mt-0.5">Locked to premium black configurations. Keep theme dark.</p>
-                                </div>
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" disabled checked class="sr-only peer">
-                                    <div class="w-9 h-5 bg-winDark-borderActive/70 rounded-full peer after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-zinc-500 after:rounded-full after:h-4 after:w-4 peer-checked:after:translate-x-full peer-checked:bg-winDark-border"></div>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Interface Settings & Information -->
-                        <div class="bg-winDark-card border border-winDark-border rounded-xl p-5 flex flex-col justify-between">
-                            <div class="space-y-4">
-                                <h3 class="text-xs font-bold tracking-widest text-winDark-textMuted uppercase flex items-center space-x-2">
-                                    <i data-lucide="info" class="w-4 h-4"></i>
-                                    <span>System Manifest</span>
-                                </h3>
-                                
-                                <div class="space-y-3 font-sans text-xs">
-                                    <div class="flex justify-between border-b border-winDark-border/60 pb-2">
-                                        <span class="text-winDark-textMuted">WPF Hook Container</span>
-                                        <span class="font-mono text-zinc-300">TckExc.exe (WebView2)</span>
-                                    </div>
-                                    <div class="flex justify-between border-b border-winDark-border/60 pb-2">
-                                        <span class="text-winDark-textMuted">Execution Engine API</span>
-                                        <span class="font-mono text-zinc-300">TckApi.dll</span>
-                                    </div>
-                                    <div class="flex justify-between border-b border-winDark-border/60 pb-2">
-                                        <span class="text-winDark-textMuted font-sans">Active Thread Lock</span>
-                                        <span class="font-mono text-zinc-300">IPC Interprocess Bridge</span>
-                                    </div>
-                                    <div class="flex justify-between pb-1">
-                                        <span class="text-winDark-textMuted">Build Environment</span>
-                                        <span class="text-winDark-accent uppercase font-semibold">Release x64</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="bg-winDark-deep/40 p-3 rounded-lg border border-winDark-border mt-4">
-                                <p class="text-[11px] text-winDark-textMuted leading-relaxed flex items-start space-x-2">
-                                    <i data-lucide="shield-check" class="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5"></i>
-                                    <span>Memory mapping protection levels and DLL bindings are isolated directly. Interprocess communication utilizes native async bindings.</span>
-                                </p>
-                            </div>
-                        </div>
-
-                    </div>
-                </section>
-
-            </div>
-        </main>
-    </div>
-
-    <!-- TOAST NOTIFICATION CONTAINER -->
-    <div id="toast-wrapper" class="fixed top-4 right-4 z-50 flex flex-col space-y-2.5 max-w-sm pointer-events-none"></div>
-
-    <!-- MULTI INJECT MODAL (MODERN FLUID PANEL) -->
-    <div id="inject-modal" class="fixed inset-0 z-40 bg-winDark-deep/80 backdrop-blur-sm flex items-center justify-center p-4 hidden transition-all duration-300">
-        <div class="bg-winDark-card border border-winDark-border rounded-xl w-full max-w-xl shadow-2xl overflow-hidden scale-95 transform transition-transform duration-200" id="inject-modal-card">
-            
-            <!-- Modal Header -->
-            <div class="p-4 border-b border-winDark-border flex justify-between items-center bg-winDark-sidebar/40">
-                <div class="flex items-center space-x-2">
-                    <i data-lucide="layers" class="w-4 h-4 text-winDark-accent"></i>
-                    <h3 class="font-bold text-sm uppercase tracking-wider">Multi Injector Selection</h3>
-                </div>
-                <button onclick="closeInjectModal()" class="text-winDark-textMuted hover:text-white transition-colors">
-                    <i data-lucide="x" class="w-4.5 h-4.5"></i>
-                </button>
-            </div>
-
-            <!-- Modal Content -->
-            <div class="p-5 space-y-4">
-                <p class="text-xs text-winDark-textMuted leading-relaxed">
-                    Choose Roblox executable instances to hook into. Running client parameters and memory spaces will be bound immediately.
-                </p>
-
-                <!-- Process Table -->
-                <div class="border border-winDark-border rounded-lg max-h-[220px] overflow-y-auto bg-winDark-deep">
-                    <table class="w-full text-left text-xs border-collapse">
-                        <thead>
-                            <tr class="border-b border-winDark-border bg-winDark-card/50 text-winDark-textMuted font-bold uppercase tracking-widest text-[9px]">
-                                <th class="p-2.5 w-10 text-center">
-                                    <input type="checkbox" id="select-all-processes" class="rounded bg-winDark-card border-winDark-border text-winDark-accent focus:ring-0" onchange="toggleSelectAllProcesses(this.checked)">
-                                </th>
-                                <th class="p-2.5">PID</th>
-                                <th class="p-2.5">Process Name</th>
-                                <th class="p-2.5 text-right">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="processes-table-body">
-                            <!-- Populated on loadProcesses(). Keep completely empty initially, no fake data. -->
-                            <tr id="empty-process-placeholder">
-                                <td colspan="4" class="p-8 text-center text-winDark-textMuted">
-                                    <div class="flex flex-col items-center">
-                                        <i data-lucide="alert-circle" class="w-6 h-6 stroke-1 mb-2"></i>
-                                        <p class="text-xs font-semibold">No Processes Available</p>
-                                        <p class="text-[10px] text-zinc-600 mt-1">Please launch target client software or click refresh to search.</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Modal Footer -->
-            <div class="p-4 bg-winDark-sidebar/40 border-t border-winDark-border flex justify-between items-center">
-                <button onclick="triggerProcessRefresh()" class="flex items-center space-x-1.5 px-3 py-1.5 bg-winDark-border hover:bg-winDark-borderActive text-xs font-semibold rounded-lg transition-colors text-white border border-white/5">
-                    <i data-lucide="refresh-cw" id="process-refresh-icon" class="w-3.5 h-3.5"></i>
-                    <span>Refresh Processes</span>
-                </button>
-                <div class="flex items-center space-x-2">
-                    <button onclick="closeInjectModal()" class="px-4 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-xs font-semibold rounded-lg text-white transition-colors">
-                        Cancel
-                    </button>
-                    <button onclick="submitSelectedInjection()" class="px-4 py-1.5 bg-winDark-accent hover:bg-winDark-accentHover text-xs font-semibold rounded-lg text-white transition-colors">
-                        Inject Selected
-                    </button>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- Monaco Loading and Initialization Logic -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.39.0/min/vs/loader.js"></script>
-    
-    <script>
-        // Core states
-        let isInjected = false;
-        let isAutoInjectEnabled = false;
-        let activeNotificationsEnabled = true;
-        let monacoInstance = null;
-        let processesList = [];
-
-        // Loading Screen Management
-        window.addEventListener('load', () => {
-            // Initiate progress simulator until WPF takes command
-            let progress = 0;
-            const progressInterval = setInterval(() => {
-                if (progress < 90) {
-                    progress += Math.floor(Math.random() * 20) + 5;
-                    if (progress > 90) progress = 90;
-                    updateLoadingProgress(progress);
-                    
-                    if (progress < 30) updateLoadingStatus("Initializing TckExc...");
-                    else if (progress < 60) updateLoadingStatus("Preparing Components...");
-                    else updateLoadingStatus("Connecting Backend...");
-                }
-            }, 100);
-
-            // Mock-ready final execution sequence
-            setTimeout(() => {
-                clearInterval(progressInterval);
-                updateLoadingProgress(100);
-                updateLoadingStatus("Ready.");
-                setTimeout(() => {
-                    hideLoadingScreen();
-                }, 200);
-            }, 1100);
-
-            // Check if WebView2 system is loaded and configure state
-            if (window.chrome && window.chrome.webview) {
-                document.getElementById('kpi-ipc-status').textContent = "Active";
-                document.getElementById('kpi-ipc-status').className = "text-sm font-semibold text-emerald-500 uppercase";
-                document.getElementById('header-backend-status').innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span><span>CONNECTED TO TCKAPI</span>';
-                document.getElementById('header-backend-status').className = "inline-flex items-center space-x-1.5 px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-500/10 text-emerald-500";
-            }
-        });
-
-        // Initialize Monaco Editor
-        try {
-            document.getElementById('editor-fallback').classList.remove('hidden');
-            require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.39.0/min/vs' } });
-            require(['vs/editor/editor.main'], function () {
-                document.getElementById('editor-fallback').classList.add('hidden');
-                monacoInstance = monaco.editor.create(document.getElementById('monaco-container'), {
-                    value: '-- TckExc Premium Desktop Workspace\nprint("Script engine active and operational.")',
-                    language: 'lua',
-                    theme: 'vs-dark',
-                    automaticLayout: true,
-                    minimap: { enabled: true },
-                    fontSize: 13,
-                    fontFamily: 'Consolas, monospace',
-                    lineNumbers: 'on',
-                    roundedSelection: true,
-                    scrollBeyondLastLine: false,
-                    cursorSmoothCaretAnimation: "on",
-                    padding: { top: 8, bottom: 8 }
-                });
-            });
-        } catch (err) {
-            console.error("Monaco load failure, preparing fallback text element", err);
-            document.getElementById('editor-fallback').innerHTML = '<p class="text-xs text-rose-500">Failed to load web editor environment. System relies on localized sandbox fallback.</p>';
+        .toast {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px 18px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            pointer-events: auto;
+            animation: toastIn .3s ease;
+            position: relative;
+            overflow: hidden;
         }
-
-        // TAB ROUTER NAVIGATION
-        function switchTab(tabId) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.add('hidden');
-            });
-            // Show target
-            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-
-            // Set active class to navigation buttons
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.className = "nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 text-winDark-textMuted hover:text-white hover:bg-winDark-card/50";
-            });
-            const activeBtn = document.getElementById(`tab-btn-${tabId}`);
-            if (activeBtn) {
-                activeBtn.className = "nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 bg-winDark-border text-white border border-white/5";
+        .toast.removing {
+            animation: toastOut .3s ease forwards;
+        }
+        @keyframes toastIn {
+            0% {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
             }
         }
-
-        // CLEAR EDITOR CONTENT
-        function clearEditor() {
-            if (monacoInstance) {
-                monacoInstance.setValue("");
-                notify("Clear Action", "Workspace code wiped clean.", "info");
+        @keyframes toastOut {
+            0% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateX(40px);
             }
         }
-
-        // FILE IMPORT PIPELINE
-        function triggerFileImport() {
-            document.getElementById('file-importer').click();
+        .toast .toast-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+            margin-top: 1px;
         }
-
-        // IMPORT FILE CALLBACK
-        function importScriptFile(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                if (monacoInstance) {
-                    monacoInstance.setValue(e.target.result);
-                    notify("File Loaded", `Successfully imported ${file.name}`, "success");
-                }
-            };
-            reader.readAsText(file);
+        .toast .toast-body {
+            flex: 1;
+            min-width: 0;
         }
-
-        // FILE EXPORT / EXECUTOR CODE DISPATCH
-        function triggerFileExport() {
-            if (!monacoInstance) return;
-            const content = monacoInstance.getValue();
-            
-            // Allow dynamic local download trigger for sandboxed environment
-            const blob = new Blob([content], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'tckexc_payload.lua';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            notify("Export Trigger", "Lua code downloaded/routed.", "success");
+        .toast .toast-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
         }
-
-        // TRIGGER INJECT MODAL SCENE
-        function openInjectModal() {
-            const modal = document.getElementById('inject-modal');
-            const card = document.getElementById('inject-modal-card');
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                card.classList.remove('scale-95');
-                card.classList.add('scale-100');
-            }, 10);
-            
-            // Auto dispatch fresh process list scan on modal activation
-            triggerProcessRefresh();
+        .toast .toast-message {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
         }
-
-        function closeInjectModal() {
-            const modal = document.getElementById('inject-modal');
-            const card = document.getElementById('inject-modal-card');
-            card.classList.remove('scale-100');
-            card.classList.add('scale-95');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 200);
+        .toast .toast-close {
+            color: var(--text-muted);
+            font-size: 16px;
+            padding: 0 2px;
+            flex-shrink: 0;
+            transition: var(--transition);
         }
-
-        // MODAL PROCESS REFRESH CONTROLLER
-        function triggerProcessRefresh() {
-            const refreshIcon = document.getElementById('process-refresh-icon');
-            if (refreshIcon) refreshIcon.classList.add('animate-spin');
-
-            // Dispatch update message across IPC
-            window.TckBridge.refreshProcesses();
-
-            // Set simple UI timeout logic to cancel spinner if backend doesn't answer instantly
-            setTimeout(() => {
-                if (refreshIcon) refreshIcon.classList.remove('animate-spin');
-            }, 1000);
-        }
-
-        // TOGGLE SELECTIONS INSIDE MODAL PROCESS TABLE
-        function toggleSelectAllProcesses(isChecked) {
-            const checkboxes = document.querySelectorAll('.process-selector-checkbox');
-            checkboxes.forEach(cb => cb.checked = isChecked);
-        }
-
-        // ASYNC SUBMIT TARGET PID LIST TO INJECT PIPELINE
-        function submitSelectedInjection() {
-            const checkboxes = document.querySelectorAll('.process-selector-checkbox:checked');
-            const selectedPids = Array.from(checkboxes).map(cb => parseInt(cb.getAttribute('data-pid')));
-
-            if (selectedPids.length === 0) {
-                notify("No Selection", "Please check at least one target process.", "warning");
-                return;
-            }
-
-            // Route execution payload to DLL wrapper
-            window.TckBridge.injectSelected(selectedPids);
-            notify("Injection Triggered", `Dispatching attachment commands to ${selectedPids.length} processes...`, "info");
-            closeInjectModal();
-        }
-
-        // GLOBAL EXECUTOR TRIGGER WITH INJECTION GUARD
-        function handleExecute() {
-            if (!monacoInstance) return;
-            const payload = monacoInstance.getValue().trim();
-
-            if (!payload) {
-                notify("Empty Workspace", "No code detected. Input scripts before executing.", "warning");
-                return;
-            }
-
-            if (!isInjected) {
-                notify("Injection Required", "Please inject TckExc before executing scripts.", "error");
-                return;
-            }
-
-            // Route scripts to WPF container
-            window.TckBridge.executeScript(payload);
-        }
-
-        // SETTINGS TOGGLES WITH BRIDGE CALLBACK HANDLERS
-        function toggleSettingAutoInject(isChecked) {
-            isAutoInjectEnabled = isChecked;
-            window.TckBridge.toggleAutoInject(isChecked);
-            notify("Settings Modified", `Auto Inject mode is now ${isChecked ? 'Enabled' : 'Disabled'}.`, "info");
-        }
-
-        function toggleSettingNotifications(isChecked) {
-            activeNotificationsEnabled = isChecked;
-            notify("Settings Modified", `Visual toasts are now ${isChecked ? 'On' : 'Off'}.`, "info");
-        }
-
-        // RECENT LOGS UI HELPER
-        function clearActivityLogs() {
-            const container = document.getElementById('activities-container');
-            container.innerHTML = `
-                <div class="h-full flex flex-col items-center justify-center text-center p-6 text-winDark-textMuted">
-                    <i data-lucide="clipboard-list" class="w-8 h-8 stroke-1 mb-2"></i>
-                    <p class="text-xs font-semibold">No Logs Registered</p>
-                </div>
-            `;
-            lucide.createIcons();
-        }
-
-        // ==========================================
-        // TOAST NOTIFICATION SYSTEM (WINDOWS 11 UI)
-        // ==========================================
-        function notify(title, message, type = 'info') {
-            if (!activeNotificationsEnabled) return;
-
-            const wrapper = document.getElementById('toast-wrapper');
-            const toast = document.createElement('div');
-            
-            // Style setup based on type
-            let icon = 'info';
-            let colorClass = 'border-l-4 border-l-winDark-accent';
-            let iconColor = 'text-winDark-accent';
-
-            if (type === 'success') {
-                icon = 'check-circle';
-                colorClass = 'border-l-4 border-l-emerald-500';
-                iconColor = 'text-emerald-500';
-            } else if (type === 'error') {
-                icon = 'alert-octagon';
-                colorClass = 'border-l-4 border-l-rose-500';
-                iconColor = 'text-rose-500';
-            } else if (type === 'warning') {
-                icon = 'alert-triangle';
-                colorClass = 'border-l-4 border-l-amber-500';
-                iconColor = 'text-amber-500';
-            }
-
-            toast.className = `flex items-start space-x-3 bg-winDark-card border border-winDark-border p-3.5 rounded-lg shadow-xl pointer-events-auto transform translate-x-12 opacity-0 transition-all duration-300 ${colorClass}`;
-            toast.innerHTML = `
-                <div class="${iconColor} mt-0.5">
-                    <i data-lucide="${icon}" class="w-4 h-4"></i>
-                </div>
-                <div class="flex-1">
-                    <p class="text-xs font-bold leading-tight tracking-wide text-zinc-100">${title}</p>
-                    <p class="text-[10px] text-winDark-textMuted mt-1 leading-relaxed">${message}</p>
-                </div>
-                <button class="text-winDark-textMuted hover:text-white transition-colors" onclick="this.parentElement.remove()">
-                    <i data-lucide="x" class="w-3 h-3"></i>
-                </button>
-            `;
-
-            wrapper.appendChild(toast);
-            lucide.createIcons();
-
-            // Slide In Transition
-            setTimeout(() => {
-                toast.classList.remove('translate-x-12', 'opacity-0');
-                toast.classList.add('translate-x-0', 'opacity-100');
-            }, 10);
-
-            // Auto Dismiss Trigger
-            setTimeout(() => {
-                toast.classList.remove('translate-x-0', 'opacity-100');
-                toast.classList.add('translate-x-12', 'opacity-0');
-                setTimeout(() => {
-                    toast.remove();
-                }, 300);
-            }, 4500);
-        }
-
-        // ==========================================
-        // SOURCE AND WORKSPACE PROTECTION CODES
-        // ==========================================
-        window.addEventListener('keydown', (e) => {
-            // Block F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+S
-            const isInspect = (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j'));
-            const isSource = (e.ctrlKey && (e.key === 'U' || e.key === 'u'));
-            const isSave = (e.ctrlKey && (e.key === 'S' || e.key === 's'));
-            const isF12 = (e.key === 'F12');
-
-            if (isInspect || isSource || isSave || isF12) {
-                e.preventDefault();
-                notify("Protection Layer", "System assets and source controls are securely isolated.", "warning");
-                return false;
-            }
-        });
-
-        // ==========================================
-        // WEBVIEW2 IPC BRIDGE - EXPORT
-        // ==========================================
-        window.TckBridge = {
-            executeScript: function (script) {
-                this.post({ action: "execute", script: script });
-            },
-            refreshProcesses: function () {
-                this.post({ action: "refreshProcesses" });
-            },
-            injectSelected: function (pids) {
-                this.post({ action: "injectSelected", pids: pids });
-            },
-            toggleAutoInject: function (enabled) {
-                this.post({ action: "autoInject", enabled: enabled });
-            },
-            requestClientCount: function () {
-                this.post({ action: "requestStatus" });
-            },
-            requestClients: function () {
-                this.post({ action: "requestClients" });
-            },
-            requestExecutorStatus: function () {
-                this.post({ action: "requestStatus" });
-            },
-            requestInjectionStatus: function () {
-                this.post({ action: "requestStatus" });
-            },
-            post: function (payload) {
-                if (window.chrome && window.chrome.webview && window.chrome.webview.postMessage) {
-                    window.chrome.webview.postMessage(payload);
-                } else {
-                    console.log("WPF IPC Bridge Offline. Local Mock Shell Data Out:", payload);
-                }
-            }
-        };
-
-        // ==========================================
-        // GLOBAL CALLBACKS ACCESSIBLE BY WPF (C#)
-        // ==========================================
-
-        // Populate Modal Processes Table
-        window.loadProcesses = function (processes) {
-            const tbody = document.getElementById('processes-table-body');
-            
-            if (!processes || processes.length === 0) {
-                tbody.innerHTML = `
-                    <tr id="empty-process-placeholder">
-                        <td colspan="4" class="p-8 text-center text-winDark-textMuted">
-                            <div class="flex flex-col items-center">
-                                <i data-lucide="alert-circle" class="w-6 h-6 stroke-1 mb-2"></i>
-                                <p class="text-xs font-semibold">No Processes Available</p>
-                                <p class="text-[10px] text-zinc-600 mt-1">Please launch target client software or click refresh to search.</p>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-                lucide.createIcons();
-                return;
-            }
-
-            processesList = processes;
-            tbody.innerHTML = '';
-            
-            processes.forEach(proc => {
-                const tr = document.createElement('tr');
-                tr.className = "border-b border-winDark-border hover:bg-winDark-card/30 transition-colors";
-                tr.innerHTML = `
-                    <td class="p-2.5 text-center">
-                        <input type="checkbox" data-pid="${proc.pid}" class="process-selector-checkbox rounded bg-winDark-sidebar border-winDark-border text-winDark-accent focus:ring-0">
-                    </td>
-                    <td class="p-2.5 font-mono text-[11px] font-semibold">${proc.pid}</td>
-                    <td class="p-2.5 text-zinc-200 font-semibold">${proc.name}</td>
-                    <td class="p-2.5 text-right">
-                        <span class="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-500/10 text-emerald-400">
-                            <span class="w-1 h-1 rounded-full bg-emerald-400"></span>
-                            <span>${proc.status || 'Active'}</span>
-                        </span>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        };
-
-        // Update active connected client counts
-        window.updateClientCount = function (count) {
-            document.getElementById('kpi-client-count').textContent = count;
-            document.getElementById('client-total-badge').textContent = `Total: ${count}`;
-        };
-
-        // Populate connected Clients card list on Dashboard
-        window.updateClients = function (clients) {
-            const container = document.getElementById('clients-container');
-            
-            if (!clients || clients.length === 0) {
-                container.innerHTML = `
-                    <div class="h-full flex flex-col items-center justify-center text-center p-6 text-winDark-textMuted">
-                        <i data-lucide="inbox" class="w-8 h-8 stroke-1 mb-2"></i>
-                        <p class="text-xs font-semibold">No Connected Clients Available</p>
-                        <p class="text-[10px] text-zinc-600 mt-1 max-w-xs">Start a Roblox process and attach TckExc to link API telemetry.</p>
-                    </div>
-                `;
-                lucide.createIcons();
-                return;
-            }
-
-            container.innerHTML = '';
-            clients.forEach(client => {
-                const item = document.createElement('div');
-                item.className = "p-3 bg-winDark-deep border border-winDark-border hover:border-winDark-borderActive rounded-lg flex items-center justify-between transition-colors";
-                item.innerHTML = `
-                    <div class="flex items-center space-x-3">
-                        <div class="w-7 h-7 rounded-md bg-winDark-accent/10 flex items-center justify-center text-winDark-accent font-bold text-xs">
-                            ${client.executorName ? client.executorName[0] : 'T'}
-                        </div>
-                        <div>
-                            <div class="flex items-center space-x-1.5">
-                                <span class="text-xs font-bold text-zinc-200">Client ID: ${client.id}</span>
-                                <span class="text-[9px] px-1 py-0.2 bg-winDark-border text-winDark-accent rounded font-mono">${client.executorName || 'TckExc'}</span>
-                            </div>
-                            <div class="flex items-center space-x-3 text-[10px] text-winDark-textMuted mt-0.5">
-                                <span>UID: ${client.userId}</span>
-                                <span>Game ID: ${client.gameId}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                `;
-                container.appendChild(item);
-            });
-        };
-
-        // Update overall execution status states
-        window.updateExecutorStatus = function (status) {
-            const kpi = document.getElementById('kpi-executor-status');
-            kpi.textContent = status;
-            
-            // Adjust visual classes depending on string
-            if (status.toLowerCase().includes('wait')) {
-                kpi.className = "text-sm font-semibold text-amber-500 uppercase";
-            } else if (status.toLowerCase().includes('run') || status.toLowerCase().includes('ready') || status.toLowerCase().includes('connected')) {
-                kpi.className = "text-sm font-semibold text-emerald-500 uppercase";
-            } else {
-                kpi.className = "text-sm font-semibold text-zinc-400 uppercase";
-            }
-        };
-
-        // Update overall target processes hook status values
-        window.updateInjectionStatus = function (status) {
-            const kpi = document.getElementById('kpi-injection-status');
-            kpi.textContent = status;
-
-            // Handle standard states
-            if (status.toLowerCase() === 'injected') {
-                kpi.className = "text-sm font-semibold text-emerald-500 uppercase";
-                isInjected = true;
-            } else if (status.toLowerCase() === 'not injected' || status.toLowerCase() === 'disconnected') {
-                kpi.className = "text-sm font-semibold text-rose-500 uppercase";
-                isInjected = false;
-            } else if (status.toLowerCase() === 'injecting') {
-                kpi.className = "text-sm font-semibold text-amber-500 uppercase";
-            } else {
-                kpi.className = "text-sm font-semibold text-zinc-400 uppercase";
-            }
-        };
-
-        // Explicit injected state assignment helper (bool)
-        window.setInjectedState = function (state) {
-            isInjected = state;
-            window.updateInjectionStatus(state ? 'Injected' : 'Not Injected');
-        };
-
-        // Force overlay displays
-        window.showLoadingScreen = function () {
-            const screen = document.getElementById('loading-screen');
-            screen.classList.remove('hidden');
-            setTimeout(() => {
-                screen.classList.remove('opacity-0');
-            }, 10);
-        };
-
-        window.hideLoadingScreen = function () {
-            const screen = document.getElementById('loading-screen');
-            screen.classList.add('opacity-0');
-            setTimeout(() => {
-                screen.classList.add('hidden');
-            }, 500);
-        };
-
-        // Adjust loading texts inside Overlay
-        window.updateLoadingStatus = function (text) {
-            document.getElementById('loading-status-text').textContent = text;
-        };
-
-        // Adjust percentage loaders
-        window.updateLoadingProgress = function (percent) {
-            document.getElementById('loading-progress-bar').style.width = `${percent}%`;
-        };
-
-        // Push new logs to dashboard Activity container
-        window.appendActivity = function (activity) {
-            const container = document.getElementById('activities-container');
-            
-            // Wipe default placeholder text if present
-            const placeholder = container.querySelector('.h-full');
-            if (placeholder) {
-                container.innerHTML = '';
-            }
-
-            const item = document.createElement('div');
-            item.className = "p-2 bg-winDark-sidebar/60 border border-winDark-border/60 rounded flex justify-between text-zinc-300";
-            item.innerHTML = `
-                <div class="flex items-start space-x-1.5">
-                    <span class="text-winDark-accent font-bold">[SYS]</span>
-                    <span class="text-zinc-200">${activity.text || activity}</span>
-                </div>
-                <span class="text-[9px] text-winDark-textMuted">${activity.timestamp || new Date().toLocaleTimeString()}</span>
-            `;
-            
-            container.insertBefore(item, container.firstChild);
-        };
-
-        // Initial setup for Lucide Icons
-        lucide.createIcons();
-    </script>
-</body>
-</html>
+        .toast .toast-close:hover {
