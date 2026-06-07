@@ -69,9 +69,9 @@
   --transition-normal: 250ms cubic-bezier(0.16, 1, 0.3, 1);
   --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
   
-  --sidebar-width: 280px;
-  --topbar-height: 48px;
-  --bottombar-height: 28px;
+  --sidebar-width: clamp(200px, 18vw, 280px);
+  --topbar-height: 44px;
+  --bottombar-height: 26px;
   --font: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -161,8 +161,8 @@ body::before {
   border: 1px solid var(--border-primary);
   backdrop-filter: blur(20px);
   border-radius: 24px;
-  padding: 36px 40px;
-  width: 380px;
+  padding: 32px 36px;
+  width: clamp(300px, 85vw, 380px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -330,6 +330,8 @@ body::before {
    ======================================== */
 .sidebar {
   width: var(--sidebar-width);
+  min-width: 64px;
+  max-width: 280px;
   flex-shrink: 0;
   background: var(--bg-sidebar);
   backdrop-filter: blur(20px);
@@ -340,6 +342,7 @@ body::before {
   z-index: 10;
   position: relative;
   height: 100%;
+  overflow: hidden;
 }
 
 .sidebar-header {
@@ -353,24 +356,30 @@ body::before {
 }
 
 .sidebar-nav {
-  padding: 20px 16px;
+  padding: 16px 12px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .nav-item {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 10px 16px;
+  gap: 12px;
+  padding: 9px 14px;
   border-radius: var(--radius-md);
   cursor: pointer;
   font-size: 12px;
   font-weight: 600;
   color: var(--text-secondary);
   transition: background var(--transition-fast), color var(--transition-fast);
+  white-space: nowrap;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
 .nav-item::before {
@@ -405,6 +414,7 @@ body::before {
 .nav-item svg {
   width: 14px;
   height: 14px;
+  flex-shrink: 0;
   opacity: 0.6;
   transition: opacity var(--transition-fast);
 }
@@ -415,11 +425,9 @@ body::before {
 }
 
 .sidebar-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  padding: 16px;
+  margin-top: auto;
+  flex-shrink: 0;
+  padding: 12px;
   border-top: 1px solid var(--border-primary);
   display: flex;
   flex-direction: column;
@@ -442,36 +450,44 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 24px;
+  padding: 0 clamp(12px, 2vw, 24px);
+  gap: 12px;
   background: var(--bg-sidebar);
   backdrop-filter: blur(20px);
   z-index: 10;
   flex-shrink: 0;
+  overflow: hidden;
 }
 
 .topbar-left {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .topbar-title {
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.5px;
   color: var(--text-primary);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .topbar-meta-item {
   font-size: 10px;
   font-weight: 600;
   color: var(--text-tertiary);
+  white-space: nowrap;
 }
 
 .topbar-divider {
   width: 1px;
   height: 12px;
   background: var(--border-primary);
+  flex-shrink: 0;
 }
 
 .topbar-version-badge {
@@ -481,7 +497,8 @@ body::before {
 .topbar-right {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
+  flex-shrink: 0;
 }
 
 .topbar-status-label {
@@ -491,10 +508,11 @@ body::before {
 .topbar-status-wrapper {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   font-size: 10px;
   font-weight: 700;
   color: var(--text-secondary);
+  white-space: nowrap;
 }
 
 /* ========================================
@@ -515,7 +533,7 @@ body::before {
   min-height: 0;
   overflow: hidden;
   position: relative;
-  padding: 24px;
+  padding: clamp(12px, 1.5vw, 24px);
 }
 
 /* ========================================
@@ -526,6 +544,7 @@ body::before {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  min-height: 0;
 }
 
 .tab-page.active {
@@ -537,19 +556,19 @@ body::before {
   flex-direction: column;
   height: 100%;
   overflow-y: auto;
-  gap: 20px;
+  gap: clamp(12px, 1.5vw, 20px);
 }
 
 /* Page: Executor workspace */
 .tab-page#page-executor {
   flex-direction: column;
   height: 100%;
+  min-height: 0;
 }
 
 .executor-workspace-layout {
-  display: grid;
-  grid-template-columns: 1fr 280px;
-  gap: 20px;
+  display: flex;
+  flex-direction: column;
   height: 100%;
   width: 100%;
   min-height: 0;
@@ -558,17 +577,11 @@ body::before {
 .executor-left {
   display: flex;
   flex-direction: column;
+  flex: 1;
   height: 100%;
-  gap: 12px;
+  gap: 10px;
   min-width: 0;
-}
-
-.executor-right {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  width: 280px;
-  flex-shrink: 0;
+  min-height: 0;
 }
 
 /* Page: Autoexec script manager */
@@ -576,7 +589,7 @@ body::before {
   flex-direction: column;
   height: 100%;
   overflow-y: auto;
-  gap: 20px;
+  gap: clamp(12px, 1.5vw, 20px);
 }
 
 /* Page: Settings */
@@ -584,7 +597,7 @@ body::before {
   flex-direction: column;
   height: 100%;
   overflow-y: auto;
-  gap: 20px;
+  gap: clamp(12px, 1.5vw, 20px);
 }
 
 /* ========================================
@@ -595,10 +608,11 @@ body::before {
   border: 1px solid var(--border-primary);
   backdrop-filter: blur(20px);
   border-radius: var(--radius-md);
-  padding: 14px 16px;
+  padding: clamp(10px, 1vw, 14px) clamp(12px, 1vw, 16px);
   position: relative;
   transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
   box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  min-width: 0;
 }
 
 .card:hover {
@@ -607,12 +621,15 @@ body::before {
 }
 
 .card-label {
-  font-size: 8.5px;
+  font-size: 8px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.6px;
   color: var(--text-tertiary);
-  margin-bottom: 6px;
+  margin-bottom: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .card-value {
@@ -621,7 +638,10 @@ body::before {
   color: var(--text-primary);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ========================================
@@ -629,9 +649,9 @@ body::before {
    ======================================== */
 .status-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 16px;
-  margin-bottom: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: clamp(8px, 1vw, 16px);
+  margin-bottom: clamp(12px, 1.5vw, 20px);
 }
 
 .status-dot {
@@ -667,8 +687,16 @@ body::before {
 
 .dashboard-layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: clamp(12px, 1.5vw, 20px);
+  flex: 1;
+  min-height: 0;
+}
+
+.dashboard-column {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .dashboard-sec-header {
@@ -680,8 +708,42 @@ body::before {
   margin-bottom: 8px;
 }
 
+.collapsible-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+}
+
+.collapsible-panel summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.collapsible-panel summary::-webkit-details-marker {
+  display: none;
+}
+
+.collapsible-panel summary::before {
+  content: '▼';
+  font-size: 8px;
+  color: var(--text-tertiary);
+  transition: transform 150ms ease;
+  display: inline-block;
+}
+
+.collapsible-panel:not([open]) summary::before {
+  transform: rotate(-90deg);
+}
+
 .client-list-container {
-  height: 320px;
+  flex: 1;
+  min-height: 120px;
+  max-height: clamp(200px, 35vh, 400px);
   overflow-y: auto;
   background: var(--bg-card);
   border: 1px solid var(--border-primary);
@@ -707,6 +769,8 @@ body::before {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 4px;
 }
 
 .client-executor-name {
@@ -732,7 +796,9 @@ body::before {
 }
 
 .activity-list {
-  height: 320px;
+  flex: 1;
+  min-height: 120px;
+  max-height: clamp(200px, 35vh, 400px);
   overflow-y: auto;
   background: var(--bg-card);
   border: 1px solid var(--border-primary);
@@ -793,16 +859,18 @@ body::before {
 .executor-toolbar {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
 }
 
 .toolbar-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 6px 14px;
-  height: 32px;
+  gap: 5px;
+  padding: 5px clamp(8px, 1vw, 14px);
+  height: 30px;
   font-size: 11px;
   font-weight: 600;
   border: 1px solid var(--border-primary);
@@ -810,6 +878,8 @@ body::before {
   background: var(--bg-card);
   color: var(--text-secondary);
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
@@ -817,7 +887,7 @@ body::before {
   background: var(--bg-card-hover);
   border-color: var(--border-secondary);
   color: var(--text-primary);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   box-shadow: var(--shadow-sm);
 }
 
@@ -848,7 +918,7 @@ body::before {
   display: flex;
   flex-direction: column;
   flex: 1;
-  height: 100%;
+  min-height: 0;
   border: 1px solid var(--border-primary);
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -859,13 +929,14 @@ body::before {
 
 /* Header for workspace */
 .editor-workspace-header {
-  height: 36px;
+  height: 32px;
   background: rgba(15, 15, 18, 0.9);
   border-bottom: 1px solid var(--border-primary);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
+  padding: 0 clamp(8px, 1vw, 16px);
+  flex-shrink: 0;
 }
 
 .file-name-info {
@@ -900,6 +971,7 @@ body::before {
 
 .editor-wrapper {
   flex: 1;
+  min-height: 0;
   overflow: hidden;
   background: #060608;
   position: relative;
@@ -912,13 +984,24 @@ body::before {
 
 /* Terminal output panel */
 .terminal-panel {
-  height: 170px;
-  min-height: 130px;
-  max-height: 240px;
+  height: clamp(100px, 20vh, 200px);
+  min-height: 80px;
+  max-height: 35%;
   background: #040405;
   border-top: 1px solid var(--border-primary);
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
+  transition: height 200ms cubic-bezier(0.16, 1, 0.3, 1), min-height 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.terminal-panel.collapsed {
+  height: 32px !important;
+  min-height: 32px !important;
+}
+
+.terminal-panel.collapsed .terminal-body {
+  display: none !important;
 }
 
 .terminal-header {
@@ -1033,7 +1116,8 @@ body::before {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 180px;
+  min-height: 100px;
+  max-height: 180px;
   color: var(--text-tertiary);
   font-size: 10.5px;
   gap: 8px;
@@ -1121,11 +1205,12 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 14px;
+  padding: clamp(8px, 1vw, 12px) clamp(10px, 1vw, 14px);
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid var(--border-primary);
   border-radius: var(--radius-md);
   transition: background var(--transition-fast);
+  gap: 12px;
 }
 
 .setting-row:hover {
@@ -1190,7 +1275,6 @@ body::before {
    BOTTOM STATUS BAR
    ======================================== */
 .bottom-bar {
-  grid-area: bottom;
   height: var(--bottombar-height);
   background: var(--bg-sidebar);
   backdrop-filter: blur(20px);
@@ -1198,22 +1282,30 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 24px;
-  font-size: 9.5px;
+  padding: 0 clamp(12px, 2vw, 24px);
+  font-size: 9px;
   color: var(--text-tertiary);
   z-index: 10;
+  flex-shrink: 0;
+  overflow: hidden;
+  gap: 8px;
 }
 
 .bottom-left, .bottom-right {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: clamp(8px, 1.5vw, 18px);
+  min-width: 0;
+  overflow: hidden;
 }
 
 .bottom-item {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .bottom-value {
@@ -1247,8 +1339,7 @@ body::before {
   background: var(--bg-modal);
   border: 1px solid var(--border-secondary);
   border-radius: var(--radius-lg);
-  width: 500px;
-  max-width: 90vw;
+  width: clamp(320px, 90vw, 500px);
   max-height: 80vh;
   display: flex;
   flex-direction: column;
@@ -1471,6 +1562,174 @@ body::before {
 .gap-settings {
   gap: 10px;
 }
+
+/* ========================================
+   RESPONSIVE DESIGN & MEDIA QUERIES
+   ======================================== */
+
+/* Prevent horizontal scrolls globally */
+body, html, #app, .content-wrapper, .main-content {
+  overflow-x: hidden !important;
+}
+
+/* Apply scrollbars to overflow areas */
+.terminal-body, .client-list-container, .activity-list, #page-settings, #page-autoexec, #page-dashboard {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
+}
+
+/* Optimize blur filters for WebView2 performance */
+.sidebar, .topbar, .bottom-bar, .card, .modal-overlay {
+  backdrop-filter: blur(8px) !important;
+}
+
+/* ---- Breakpoint: 1280px (Small Laptop / DPI 125%+) ---- */
+@media (max-width: 1280px) {
+  :root {
+    --sidebar-width: 220px;
+  }
+  
+  .topbar-left .topbar-meta-item:nth-of-type(n+3),
+  .topbar-left .topbar-divider:nth-of-type(n+3) {
+    display: none !important;
+  }
+}
+
+/* ---- Breakpoint: 1024px (Compact Window / 1280x720 / DPI 150%) ---- */
+@media (max-width: 1024px) {
+  :root {
+    --sidebar-width: 64px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+  }
+
+  /* Collapse sidebar to icon-only */
+  .sidebar-header .sidebar-title,
+  .sidebar-nav .nav-item span,
+  .sidebar-footer .nav-item span {
+    display: none !important;
+  }
+
+  .sidebar {
+    min-width: 56px;
+    max-width: 64px;
+  }
+
+  .sidebar-nav {
+    padding: 12px 8px;
+    align-items: center;
+  }
+
+  .sidebar-nav .nav-item,
+  .sidebar-footer .nav-item {
+    justify-content: center;
+    padding: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    gap: 0;
+  }
+
+  .nav-item::before {
+    display: none;
+  }
+
+  .sidebar-footer {
+    padding: 8px;
+    align-items: center;
+  }
+
+  /* Hide extra topbar metadata */
+  .topbar-left .topbar-divider:nth-of-type(n+2),
+  .topbar-left .topbar-meta-item:nth-of-type(n+2) {
+    display: none !important;
+  }
+}
+
+/* ---- Breakpoint: 800px (Very Small Window) ---- */
+@media (max-width: 800px) {
+  .topbar-right {
+    gap: 6px;
+  }
+  
+  .topbar-title {
+    font-size: 11px;
+  }
+  
+  .bottom-right {
+    display: none !important;
+  }
+
+  /* Hide topbar executor status text, keep dot */
+  #val-executor-status {
+    display: none !important;
+  }
+  
+  .toolbar-btn svg {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+/* ---- Breakpoint: 600px (Ultra Compact) ---- */
+@media (max-width: 600px) {
+  .topbar-left .topbar-divider,
+  .topbar-left .topbar-meta-item {
+    display: none !important;
+  }
+  
+  .status-grid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)) !important;
+  }
+  
+  .card {
+    padding: 10px 12px;
+  }
+  
+  .card-label {
+    font-size: 7.5px;
+  }
+  
+  .card-value {
+    font-size: 11px;
+  }
+}
+
+/* ---- Height Protection: ≤768px ---- */
+@media (max-height: 768px) {
+  .terminal-panel {
+    height: clamp(80px, 15vh, 140px);
+    min-height: 60px;
+  }
+  
+  .client-list-container,
+  .activity-list {
+    max-height: 200px;
+  }
+}
+
+/* ---- Height Protection: ≤600px ---- */
+@media (max-height: 600px) {
+  .terminal-panel {
+    height: 80px;
+    min-height: 50px;
+  }
+  
+  .client-list-container,
+  .activity-list {
+    max-height: 150px;
+    min-height: 80px;
+  }
+  
+  .sidebar-nav {
+    gap: 2px;
+  }
+  
+  .sidebar-nav .nav-item,
+  .sidebar-footer .nav-item {
+    padding: 7px 10px;
+  }
+}
 </style>
 </head>
 <body>
@@ -1556,30 +1815,31 @@ body::before {
     <nav class="sidebar-nav">
       <div class="nav-item active" data-tab="dashboard">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-        Home
+        <span>Home</span>
       </div>
       <div class="nav-item" data-tab="executor">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-        Execute
+        <span>Executor</span>
       </div>
       <div class="nav-item" data-tab="autoexec">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-        Scripts
+        <span>Scripts</span>
       </div>
+
       <div class="nav-item" data-tab="settings">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.32 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-        Settings
+        <span>Settings</span>
       </div>
     </nav>
 
     <div class="sidebar-footer">
       <a class="nav-item" href="https://discord.gg/ezHFmB6Jjg" target="_blank" style="text-decoration:none;">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.095 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.095 2.157 2.42 0 1.333-.947 2.418-2.157 2.418z"/></svg>
-        Discord
+        <span>Discord</span>
       </a>
       <a class="nav-item" id="nav-website" href="https://tck-exc.vercel.app/" target="_blank" style="text-decoration:none;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
-        Website
+        <span>Website</span>
       </a>
     </div>
   </aside>
@@ -1592,11 +1852,11 @@ body::before {
       <div class="topbar-left">
         <span class="topbar-title">TCK EXECUTOR</span>
         <span class="topbar-divider"></span>
-        <span class="topbar-meta-item">Version: <span style="color:var(--text-secondary);">v3.0.0</span></span>
+        <span class="topbar-meta-item">Version: <span style="color:var(--text-secondary);">v1.0.0</span></span>
         <span class="topbar-divider"></span>
-        <span class="topbar-meta-item">User: <span style="color:var(--text-secondary);">Developer</span></span>
+        <span class="topbar-meta-item">User: <span style="color:var(--text-secondary);">Member</span></span>
         <span class="topbar-divider"></span>
-        <span class="topbar-meta-item">Build: <span style="color:var(--text-secondary);">Release</span></span>
+        <span class="topbar-meta-item">Build: <span style="color:var(--text-secondary);">Debug</span></span>
       </div>
       <div class="topbar-right">
         <div class="topbar-status-wrapper">
@@ -1656,18 +1916,22 @@ body::before {
         <div class="dashboard-layout">
           <!-- Session/Client info -->
           <div class="dashboard-column">
-            <div class="dashboard-sec-header">Client Information</div>
-            <div class="client-list-container" id="client-details-card">
-              <div class="activity-empty">No Active Roblox Session</div>
-            </div>
+            <details open class="collapsible-panel">
+              <summary class="dashboard-sec-header">Client Information</summary>
+              <div class="client-list-container" id="client-details-card">
+                <div class="activity-empty">No Active Roblox Session</div>
+              </div>
+            </details>
           </div>
 
           <!-- Recent Activity -->
           <div class="dashboard-column">
-            <div class="dashboard-sec-header">Recent Activity</div>
-            <div class="activity-list" id="activity-list">
-              <div class="activity-empty" id="activity-empty">No Data Available</div>
-            </div>
+            <details open class="collapsible-panel">
+              <summary class="dashboard-sec-header">Recent Activity</summary>
+              <div class="activity-list" id="activity-list">
+                <div class="activity-empty" id="activity-empty">No Data Available</div>
+              </div>
+            </details>
           </div>
         </div>
       </div>
@@ -1713,10 +1977,13 @@ body::before {
               <div class="editor-wrapper">
                 <div id="monaco-editor"></div>
               </div>
-              <div class="terminal-panel">
+              <div class="terminal-panel" id="terminal-panel">
                 <div class="terminal-header">
                   <span class="terminal-title">Console Output</span>
-                  <button class="terminal-clear" onclick="document.getElementById('monaco-console-body').innerHTML=''">Clear</button>
+                  <div style="display:flex; gap:10px;">
+                    <button class="terminal-clear" onclick="document.getElementById('monaco-console-body').innerHTML=''">Clear</button>
+                    <button class="terminal-clear" id="btn-terminal-toggle" onclick="const p = document.getElementById('terminal-panel'); p.classList.toggle('collapsed'); this.textContent = p.classList.contains('collapsed') ? '▲ Show Terminal' : '▼ Hide Terminal'; if(AppState.monacoEditor){setTimeout(function(){AppState.monacoEditor.layout();},50);}">▼ Hide Terminal</button>
+                  </div>
                 </div>
                 <div class="terminal-body" id="monaco-console-body">
                   <div class="console-line info"><span class="console-time">[00:00:00]</span> [INFO] Console initialized. Ready to execute scripts.</div>
@@ -1724,33 +1991,7 @@ body::before {
               </div>
             </div>
           </div>
-          <div class="executor-right">
-            <div class="dashboard-column">
-              <div class="dashboard-sec-header">Executor Status Panel</div>
-              <div class="card" style="display:flex; flex-direction:column; gap:10px; padding:16px;">
-                <div style="display:flex; justify-content:space-between; font-size:11px; border-bottom:1px solid rgba(255,255,255,0.03); padding-bottom:6px;">
-                  <span style="color:var(--text-tertiary);">Executor</span>
-                  <span style="font-weight:700; color:var(--text-primary);">TCK</span>
-                </div>
-                <div style="display:flex; justify-content:space-between; font-size:11px; border-bottom:1px solid rgba(255,255,255,0.03); padding-bottom:6px;">
-                  <span style="color:var(--text-tertiary);">Status</span>
-                  <span style="font-weight:700; color:var(--success);">READY</span>
-                </div>
-                <div style="display:flex; justify-content:space-between; font-size:11px; border-bottom:1px solid rgba(255,255,255,0.03); padding-bottom:6px;">
-                  <span style="color:var(--text-tertiary);">PID</span>
-                  <span style="font-weight:700; color:var(--text-primary);" id="dashboard-pid-display">N/A</span>
-                </div>
-                <div style="display:flex; justify-content:space-between; font-size:11px; border-bottom:1px solid rgba(255,255,255,0.03); padding-bottom:6px;">
-                  <span style="color:var(--text-tertiary);">Game</span>
-                  <span style="font-weight:700; color:var(--text-secondary);">Roblox</span>
-                </div>
-                <div style="display:flex; justify-content:space-between; font-size:11px;">
-                  <span style="color:var(--text-tertiary);">Runtime</span>
-                  <span style="font-weight:700; color:var(--info);">Active</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <span id="dashboard-pid-display" style="display:none;"></span>
         </div>
       </div>
 
