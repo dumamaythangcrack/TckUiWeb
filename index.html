@@ -15,74 +15,109 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  outline: none;
 }
 
 :root {
-  --bg-primary: #0a0a0b;
-  --bg-secondary: #111113;
-  --bg-tertiary: #18181b;
-  --bg-card: #141416;
-  --bg-card-hover: #1a1a1e;
-  --bg-input: #1e1e22;
-  --bg-sidebar: #0e0e10;
-  --bg-modal-overlay: rgba(0, 0, 0, 0.65);
-  --border-primary: #27272a;
-  --border-secondary: #333338;
-  --border-subtle: #1f1f23;
-  --text-primary: #fafafa;
-  --text-secondary: #a1a1aa;
-  --text-tertiary: #71717a;
-  --text-muted: #52525b;
-  --accent: #e4e4e7;
-  --accent-hover: #f4f4f5;
-  --accent-dim: #3f3f46;
-  --success: #22c55e;
-  --success-bg: rgba(34, 197, 94, 0.08);
-  --success-border: rgba(34, 197, 94, 0.15);
-  --error: #ef4444;
-  --error-bg: rgba(239, 68, 68, 0.08);
-  --error-border: rgba(239, 68, 68, 0.15);
-  --warning: #f59e0b;
-  --warning-bg: rgba(245, 158, 11, 0.08);
-  --warning-border: rgba(245, 158, 11, 0.15);
-  --info: #3b82f6;
-  --info-bg: rgba(59, 130, 246, 0.08);
-  --info-border: rgba(59, 130, 246, 0.15);
+  /* Carbon Matte Dark Theme */
+  --bg-app: #0A0A0A;
+  --bg-panel: rgba(20, 20, 20, 0.65);
+  --bg-sidebar: rgba(16, 16, 18, 0.75);
+  --bg-card: rgba(26, 26, 30, 0.6);
+  --bg-card-hover: rgba(34, 34, 40, 0.8);
+  --bg-input: rgba(10, 10, 12, 0.8);
+  --bg-modal: #0F0F12;
+  --bg-modal-overlay: rgba(5, 5, 6, 0.85);
+  
+  /* Glassmorphism Precision Borders */
+  --border-primary: rgba(255, 255, 255, 0.05);
+  --border-secondary: rgba(255, 255, 255, 0.1);
+  --border-active: rgba(255, 255, 255, 0.18);
+  --border-subtle: rgba(255, 255, 255, 0.02);
+  
+  /* Typography Colours */
+  --text-primary: #FFFFFF;
+  --text-secondary: #A0A5AD;
+  --text-tertiary: #656C76;
+  --text-muted: #3E4249;
+  
+  /* Status indicators */
+  --success: #30D158;
+  --success-bg: rgba(48, 209, 88, 0.04);
+  --success-border: rgba(48, 209, 88, 0.12);
+  --error: #FF453A;
+  --error-bg: rgba(255, 69, 58, 0.04);
+  --error-border: rgba(255, 69, 58, 0.12);
+  --warning: #FFD60A;
+  --warning-bg: rgba(255, 214, 10, 0.04);
+  --warning-border: rgba(255, 214, 10, 0.12);
+  --info: #0A84FF;
+  --info-bg: rgba(10, 132, 255, 0.04);
+  --info-border: rgba(10, 132, 255, 0.12);
+  
+  /* Radii */
   --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
-  --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
-  --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
-  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-smooth: 350ms cubic-bezier(0.4, 0, 0.2, 1);
-  --sidebar-width: 220px;
-  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  
+  /* Ambient Shadow system */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 12px 36px rgba(0, 0, 0, 0.7);
+  --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.9);
+  
+  --transition-normal: 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  
+  --sidebar-width: 280px;
+  --topbar-height: 48px;
+  --bottombar-height: 28px;
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 html, body {
   height: 100%;
   overflow: hidden;
   font-family: var(--font);
-  background: var(--bg-primary);
+  background: var(--bg-app);
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   user-select: none;
 }
 
-/* ========================================
-   SCROLLBAR
-   ======================================== */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border-secondary); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+/* Background gradient layout */
+body::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 50% 30%, #1A1A22 0%, #0A0A0C 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 100px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
 
 /* ========================================
-   LOADING SCREEN
+   LOADING SCREEN (Premium Reveal)
    ======================================== */
 #loading-screen {
   position: fixed;
@@ -92,8 +127,17 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: var(--bg-primary);
-  transition: opacity 0.6s ease, visibility 0.6s ease;
+  background: radial-gradient(circle at center, #121215 0%, #0A0A0A 100%);
+  transition: opacity 300ms cubic-bezier(0.16, 1, 0.3, 1), visibility 300ms;
+}
+
+#loading-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.5) 100%);
+  pointer-events: none;
+  z-index: 0;
 }
 
 #loading-screen.hidden {
@@ -102,669 +146,1022 @@ html, body {
   pointer-events: none;
 }
 
-#loading-screen .loading-logo {
-  width: 96px;
-  height: 96px;
-  border-radius: var(--radius-xl);
-  margin-bottom: 24px;
-  animation: loadingPulse 2s ease-in-out infinite;
-  box-shadow: 0 0 40px rgba(255,255,255,0.04);
+#loading-screen.hidden .loading-card {
+  transform: scale(0.98) translateY(12px);
+  opacity: 0;
 }
 
-@keyframes loadingPulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.04); opacity: 0.85; }
+@keyframes cardEnter {
+  from { transform: translateY(12px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.loading-card {
+  background: rgba(20, 20, 24, 0.85);
+  border: 1px solid var(--border-primary);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 36px 40px;
+  width: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  z-index: 1;
+  transform: translateY(0);
+  opacity: 1;
+  animation: cardEnter 850ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1), opacity 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.loading-logo-container {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.loading-logo-container::before {
+  content: '';
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.02) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+#loading-screen .loading-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  z-index: 1;
+  transform: scale(0.96);
+  opacity: 0;
+  animation: logoReveal 800ms cubic-bezier(0.16, 1, 0.3, 1) forwards 150ms;
+}
+
+@keyframes logoReveal {
+  from { transform: scale(0.96); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.loading-title-group {
+  text-align: center;
+  margin-bottom: 24px;
 }
 
 #loading-screen .loading-title {
-  font-size: 28px;
+  font-size: 18px;
   font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: -0.5px;
+  letter-spacing: -0.3px;
+  color: #FFFFFF;
+  margin-bottom: 4px;
+}
+
+.loading-subtitle {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  letter-spacing: 0.1px;
+}
+
+.loading-progress-section {
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.loading-bar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   margin-bottom: 8px;
 }
 
-#loading-screen .loading-text {
-  font-size: 13px;
-  color: var(--text-tertiary);
-  margin-bottom: 28px;
-  min-height: 20px;
-  transition: opacity var(--transition-fast);
-}
-
 #loading-screen .loading-bar-track {
-  width: 260px;
-  height: 3px;
-  background: var(--border-primary);
-  border-radius: 2px;
+  flex: 1;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 100px;
   overflow: hidden;
 }
 
 #loading-screen .loading-bar-fill {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, var(--text-muted), var(--text-secondary));
-  border-radius: 2px;
-  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #FFFFFF;
+  border-radius: 100px;
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.loading-percentage {
+  font-size: 10px;
+  font-weight: 600;
+  font-family: monospace;
+  color: var(--text-secondary);
+  min-width: 28px;
+  text-align: right;
+}
+
+#loading-screen .loading-text {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  margin-bottom: 0;
+  min-height: auto;
+  text-align: left;
+}
+
+.loading-system-strip {
+  width: 100%;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  padding-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px 16px;
+}
+
+.strip-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--text-tertiary);
+}
+
+.strip-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--success);
+  display: inline-block;
 }
 
 /* ========================================
-   APP LAYOUT
+   MAIN APPLICATION GRID LAYOUT
    ======================================== */
 #app {
   display: flex;
   height: 100vh;
+  width: 100vw;
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transition: opacity var(--transition-normal);
+  z-index: 2;
+  position: relative;
+  overflow: hidden;
 }
 
-#app.visible { opacity: 1; }
+#app.visible {
+  opacity: 1;
+}
 
 /* ========================================
-   SIDEBAR
+   SIDEBAR & LEFT COLUMN
    ======================================== */
 .sidebar {
   width: var(--sidebar-width);
-  min-width: var(--sidebar-width);
+  flex-shrink: 0;
   background: var(--bg-sidebar);
+  backdrop-filter: blur(20px);
   border-right: 1px solid var(--border-primary);
   display: flex;
   flex-direction: column;
   padding: 0;
-  z-index: 100;
+  z-index: 10;
+  position: relative;
+  height: 100%;
 }
 
 .sidebar-header {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 20px 18px 16px;
-  border-bottom: 1px solid var(--border-subtle);
-}
-
-.sidebar-header img {
-  width: 34px;
-  height: 34px;
-  border-radius: var(--radius-md);
-}
-
-.sidebar-header span {
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: -0.3px;
-  color: var(--text-primary);
+  padding: 0 20px;
+  height: var(--topbar-height);
+  border-bottom: 1px solid var(--border-primary);
+  display: none; /* hidden because Topbar handles this */
 }
 
 .sidebar-nav {
-  flex: 1;
-  padding: 12px 10px;
+  padding: 20px 16px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 6px;
 }
 
 .nav-item {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
+  gap: 14px;
+  padding: 10px 16px;
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all var(--transition-fast);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 600;
   color: var(--text-secondary);
-  border: 1px solid transparent;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.nav-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) scaleY(0);
+  width: 2px;
+  height: 16px;
+  background: var(--text-primary);
+  border-radius: 1px;
+  transition: transform var(--transition-fast);
+  transform-origin: center;
 }
 
 .nav-item:hover {
-  background: var(--bg-tertiary);
+  background: rgba(255, 255, 255, 0.025);
   color: var(--text-primary);
 }
 
 .nav-item.active {
-  background: var(--bg-tertiary);
+  background: rgba(255, 255, 255, 0.04);
   color: var(--text-primary);
-  border-color: var(--border-primary);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+}
+
+.nav-item.active::before {
+  transform: translateY(-50%) scaleY(1);
 }
 
 .nav-item svg {
-  width: 18px;
-  height: 18px;
-  flex-shrink: 0;
-  opacity: 0.7;
+  width: 14px;
+  height: 14px;
+  opacity: 0.6;
+  transition: opacity var(--transition-fast);
 }
 
 .nav-item.active svg,
-.nav-item:hover svg { opacity: 1; }
+.nav-item:hover svg {
+  opacity: 1;
+}
 
 .sidebar-footer {
-  padding: 12px 10px 16px;
-  border-top: 1px solid var(--border-subtle);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 16px;
+  border-top: 1px solid var(--border-primary);
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
+  background: rgba(10, 10, 12, 0.4);
 }
 
 .sidebar-footer .nav-item {
-  font-size: 12px;
+  font-size: 11px;
   padding: 8px 12px;
   color: var(--text-tertiary);
 }
 
 /* ========================================
-   MAIN CONTENT
+   TOPBAR
    ======================================== */
-.main-content {
-  flex: 1;
+.topbar {
+  height: var(--topbar-height);
+  border-bottom: 1px solid var(--border-primary);
   display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background: var(--bg-primary);
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: var(--bg-sidebar);
+  backdrop-filter: blur(20px);
+  z-index: 10;
+  flex-shrink: 0;
 }
 
-.page-header {
-  padding: 22px 28px 0;
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.page-header h1 {
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: -0.5px;
+.topbar-title {
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
   color: var(--text-primary);
 }
 
-.page-header p {
-  font-size: 13px;
+.topbar-meta-item {
+  font-size: 10px;
+  font-weight: 600;
   color: var(--text-tertiary);
-  margin-top: 4px;
 }
 
-.page-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px 28px 28px;
+.topbar-divider {
+  width: 1px;
+  height: 12px;
+  background: var(--border-primary);
 }
 
-.tab-page {
+.topbar-version-badge {
+  display: none; /* replaced by topbar metadata */
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.topbar-status-label {
   display: none;
-  animation: fadeIn 0.25s ease;
 }
 
-.tab-page.active { display: flex; flex-direction: column; height: 100%; }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+.topbar-status-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-secondary);
 }
 
 /* ========================================
-   DASHBOARD
+   CONTENT WRAPPER
    ======================================== */
-.status-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 14px;
-  margin-bottom: 24px;
+.content-wrapper {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
 }
 
-.status-card {
+.main-content {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+  padding: 24px;
+}
+
+/* ========================================
+   TABS SYSTEM
+   ======================================== */
+.tab-page {
+  display: none !important;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.tab-page.active {
+  display: flex !important;
+}
+
+/* Page: Dashboard */
+.tab-page#page-dashboard {
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  gap: 20px;
+}
+
+/* Page: Executor workspace */
+.tab-page#page-executor {
+  flex-direction: column;
+  height: 100%;
+}
+
+.executor-workspace-layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 20px;
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+}
+
+.executor-left {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 12px;
+  min-width: 0;
+}
+
+.executor-right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 280px;
+  flex-shrink: 0;
+}
+
+/* Page: Autoexec script manager */
+.tab-page#page-autoexec {
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  gap: 20px;
+}
+
+/* Page: Settings */
+.tab-page#page-settings {
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  gap: 20px;
+}
+
+/* ========================================
+   CARDS (Translucent Glassmorphism)
+   ======================================== */
+.card {
   background: var(--bg-card);
   border: 1px solid var(--border-primary);
-  border-radius: var(--radius-lg);
-  padding: 18px 20px;
-  transition: all var(--transition-fast);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  position: relative;
+  transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+  box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, 0.02);
 }
 
-.status-card:hover {
+.card:hover {
   background: var(--bg-card-hover);
   border-color: var(--border-secondary);
 }
 
-.status-card .card-label {
-  font-size: 11px;
-  font-weight: 600;
+.card-label {
+  font-size: 8.5px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
   color: var(--text-tertiary);
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 
-.status-card .card-value {
-  font-size: 18px;
-  font-weight: 700;
+.card-value {
+  font-size: 12px;
+  font-weight: 600;
   color: var(--text-primary);
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.status-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  flex-shrink: 0;
+/* ========================================
+   DASHBOARD / STATUS PANEL & STATS
+   ======================================== */
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
 }
 
-.status-dot.green { background: var(--success); box-shadow: 0 0 6px var(--success); }
-.status-dot.red { background: var(--error); box-shadow: 0 0 6px var(--error); }
-.status-dot.yellow { background: var(--warning); box-shadow: 0 0 6px var(--warning); }
-.status-dot.blue { background: var(--info); box-shadow: 0 0 6px var(--info); }
-.status-dot.gray { background: var(--text-muted); }
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-block;
+}
 
-.section-title {
-  font-size: 14px;
+.status-dot.green { 
+  background: var(--success); 
+  box-shadow: 0 0 8px rgba(48, 209, 88, 0.2); 
+  animation: dotPulseGreen 2s infinite ease-in-out;
+}
+.status-dot.red { 
+  background: var(--error); 
+}
+.status-dot.yellow { 
+  background: var(--warning); 
+}
+.status-dot.blue { 
+  background: var(--info); 
+}
+.status-dot.gray { 
+  background: var(--text-muted); 
+}
+
+@keyframes dotPulseGreen {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.55; transform: scale(0.9); }
+}
+
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.dashboard-sec-header {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+}
+
+.client-list-container {
+  height: 320px;
+  overflow-y: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.client-item {
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  margin-bottom: 8px;
+}
+
+.client-item:last-child {
+  margin-bottom: 0;
+}
+
+.client-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.client-executor-name {
+  font-size: 11.5px;
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 12px;
-  letter-spacing: -0.2px;
+}
+
+.client-id-badge {
+  font-size: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-primary);
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-family: monospace;
+}
+
+.client-info-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  margin-bottom: 2px;
 }
 
 .activity-list {
+  height: 320px;
+  overflow-y: auto;
   background: var(--bg-card);
   border: 1px solid var(--border-primary);
-  border-radius: var(--radius-lg);
-  min-height: 160px;
-  max-height: 300px;
-  overflow-y: auto;
+  border-radius: var(--radius-md);
+  padding: 12px;
+  box-shadow: var(--shadow-sm);
 }
 
 .activity-empty {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 160px;
-  color: var(--text-muted);
-  font-size: 13px;
+  height: 100%;
+  color: var(--text-tertiary);
+  font-size: 10.5px;
+  gap: 8px;
+  text-align: center;
+}
+
+.activity-empty::before {
+  content: '';
+  width: 24px;
+  height: 24px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23656C76' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='12' y1='8' x2='12' y2='12'/%3E%3Cline x1='12' y1='16' x2='12.01' y2='16'/%3E%3C/svg%3E");
+  background-size: contain;
+  opacity: 0.4;
 }
 
 .activity-item {
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 12px 16px;
+  gap: 10px;
+  font-size: 10.5px;
   border-bottom: 1px solid var(--border-subtle);
-  font-size: 13px;
-  animation: fadeIn 0.2s ease;
+  padding: 8px 0;
 }
 
-.activity-item:last-child { border-bottom: none; }
-
-.activity-item .activity-time {
-  color: var(--text-muted);
-  font-size: 11px;
-  white-space: nowrap;
-  min-width: 60px;
-  padding-top: 1px;
-  font-variant-numeric: tabular-nums;
+.activity-time {
+  color: var(--text-tertiary);
+  font-family: monospace;
 }
 
-.activity-item .activity-msg {
+.activity-msg {
   color: var(--text-secondary);
-  line-height: 1.4;
+  line-height: 1.3;
 }
 
 /* ========================================
-   EXECUTOR
+   EXECUTOR PAGE (Monaco & Terminal Grid)
    ======================================== */
 .executor-container {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  height: 100%;
+  gap: 12px;
 }
 
 .executor-toolbar {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 0 0 14px;
-  flex-wrap: wrap;
 }
 
 .toolbar-btn {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 8px 16px;
-  font-size: 12px;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 14px;
+  height: 32px;
+  font-size: 11px;
   font-weight: 600;
-  font-family: var(--font);
   border: 1px solid var(--border-primary);
   border-radius: var(--radius-md);
-  background: var(--bg-tertiary);
+  background: var(--bg-card);
   color: var(--text-secondary);
   cursor: pointer;
-  transition: all var(--transition-fast);
-  white-space: nowrap;
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .toolbar-btn:hover {
   background: var(--bg-card-hover);
-  color: var(--text-primary);
   border-color: var(--border-secondary);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
 }
 
-.toolbar-btn:active { transform: scale(0.97); }
-
-.toolbar-btn svg { width: 14px; height: 14px; }
+.toolbar-btn:active {
+  transform: translateY(0);
+}
 
 .toolbar-btn.primary {
   background: var(--text-primary);
-  color: var(--bg-primary);
+  color: var(--bg-app);
   border-color: var(--text-primary);
 }
 
 .toolbar-btn.primary:hover {
-  background: var(--accent-hover);
-  border-color: var(--accent-hover);
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(255, 255, 255, 0.9);
 }
 
 .toolbar-separator {
   width: 1px;
-  height: 24px;
+  height: 16px;
   background: var(--border-primary);
   margin: 0 4px;
 }
 
-.editor-wrapper {
+/* Monaco Container & Workspace */
+.editor-workspace-container {
+  display: flex;
+  flex-direction: column;
   flex: 1;
+  height: 100%;
   border: 1px solid var(--border-primary);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  min-height: 300px;
-  background: #1e1e1e;
-}
-
-#monaco-editor { width: 100%; height: 100%; }
-
-/* ========================================
-   MULTI INJECT MODAL
-   ======================================== */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 5000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg-modal-overlay);
-  backdrop-filter: blur(4px);
-  opacity: 0;
-  visibility: hidden;
-  transition: all var(--transition-normal);
-}
-
-.modal-overlay.visible {
-  opacity: 1;
-  visibility: visible;
-}
-
-.modal {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-primary);
-  border-radius: var(--radius-xl);
-  width: 620px;
-  max-width: 90vw;
-  max-height: 80vh;
-  display: flex;
-  flex-direction: column;
-  box-shadow: var(--shadow-lg);
-  transform: scale(0.96) translateY(8px);
-  transition: transform var(--transition-normal);
-}
-
-.modal-overlay.visible .modal {
-  transform: scale(1) translateY(0);
-}
-
-.modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 22px;
-  border-bottom: 1px solid var(--border-primary);
-}
-
-.modal-header h2 {
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: -0.3px;
-}
-
-.modal-close {
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  background: transparent;
-  color: var(--text-tertiary);
-  cursor: pointer;
-  border-radius: var(--radius-sm);
-  transition: all var(--transition-fast);
-  font-size: 18px;
-}
-
-.modal-close:hover {
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
-}
-
-.modal-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px 22px;
-}
-
-.modal-footer {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-  padding: 14px 22px;
-  border-top: 1px solid var(--border-primary);
-}
-
-/* Process Table */
-.process-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-
-.process-table thead th {
-  text-align: left;
-  padding: 10px 12px;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--text-tertiary);
-  border-bottom: 1px solid var(--border-primary);
-  position: sticky;
-  top: 0;
-  background: var(--bg-secondary);
-}
-
-.process-table tbody tr {
-  border-bottom: 1px solid var(--border-subtle);
-  transition: background var(--transition-fast);
-}
-
-.process-table tbody tr:hover {
-  background: var(--bg-tertiary);
-}
-
-.process-table tbody td {
-  padding: 10px 12px;
-  color: var(--text-secondary);
-}
-
-.process-table tbody td:first-child {
-  width: 40px;
-}
-
-.process-table .empty-row td {
-  text-align: center;
-  padding: 40px 12px;
-  color: var(--text-muted);
-}
-
-/* Checkbox */
-input[type="checkbox"] {
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  border: 1.5px solid var(--border-secondary);
-  border-radius: 4px;
-  background: var(--bg-input);
-  cursor: pointer;
-  transition: all var(--transition-fast);
+  background: #060608;
+  box-shadow: var(--shadow-md);
   position: relative;
 }
 
-input[type="checkbox"]:checked {
-  background: var(--text-primary);
-  border-color: var(--text-primary);
-}
-
-input[type="checkbox"]:checked::after {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 5px;
-  width: 4px;
-  height: 8px;
-  border: solid var(--bg-primary);
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
-}
-
-/* ========================================
-   AUTO EXECUTE
-   ======================================== */
-.autoexec-header {
+/* Header for workspace */
+.editor-workspace-header {
+  height: 36px;
+  background: rgba(15, 15, 18, 0.9);
+  border-bottom: 1px solid var(--border-primary);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-  gap: 10px;
+  padding: 0 16px;
 }
 
-.autoexec-header .autoexec-actions {
+.file-name-info {
   display: flex;
+  align-items: center;
   gap: 8px;
 }
 
-.file-list {
-  background: var(--bg-card);
+.file-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.file-badge {
+  font-size: 9px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--border-primary);
-  border-radius: var(--radius-lg);
-  min-height: 200px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: var(--text-tertiary);
+}
+
+.mode-badge {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.editor-wrapper {
+  flex: 1;
+  overflow: hidden;
+  background: #060608;
+  position: relative;
+}
+
+#monaco-editor {
+  width: 100%;
+  height: 100%;
+}
+
+/* Terminal output panel */
+.terminal-panel {
+  height: 170px;
+  min-height: 130px;
+  max-height: 240px;
+  background: #040405;
+  border-top: 1px solid var(--border-primary);
+  display: flex;
+  flex-direction: column;
+}
+
+.terminal-header {
+  height: 32px;
+  background: #070709;
+  border-bottom: 1px solid var(--border-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+}
+
+.terminal-title {
+  font-size: 9.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-tertiary);
+}
+
+.terminal-clear {
+  background: transparent;
+  border: none;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.terminal-clear:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.terminal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 16px;
+  font-family: 'JetBrains Mono', 'Cascadia Code', Consolas, monospace;
+  font-size: 10.5px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.console-line {
+  margin-bottom: 4px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.console-line:last-child {
+  margin-bottom: 0;
+}
+
+.console-time {
+  color: var(--text-tertiary);
+  margin-right: 6px;
+}
+
+.console-label {
+  font-weight: 700;
+  margin-right: 6px;
+}
+
+.console-line.system {
+  color: #FFFFFF;
+}
+
+.console-line.executor {
+  color: #A0A5AD;
+}
+
+.console-line.success {
+  color: var(--success);
+}
+
+.console-line.warning {
+  color: var(--warning);
+}
+
+.console-line.error {
+  color: var(--error);
+}
+
+/* ========================================
+   AUTOEXEC & SETIPTS PANELS
+   ======================================== */
+.autoexec-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.autoexec-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.file-list {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  padding: 8px;
 }
 
 .file-list-empty {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 200px;
-  color: var(--text-muted);
-  font-size: 13px;
+  height: 180px;
+  color: var(--text-tertiary);
+  font-size: 10.5px;
+  gap: 8px;
+  text-align: center;
+}
+
+.file-list-empty::before {
+  content: '';
+  width: 24px;
+  height: 24px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23656C76' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpolyline points='14 2 14 8 20 8'/%3E%3C/svg%3E");
+  background-size: contain;
+  opacity: 0.4;
 }
 
 .file-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--border-subtle);
-  font-size: 13px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 4px;
+  font-size: 11px;
   color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.005);
+  border: 1px solid var(--border-primary);
+  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
 }
 
-.file-item:last-child { border-bottom: none; }
+.file-item:hover {
+  background: rgba(255, 255, 255, 0.025);
+  border-color: var(--border-secondary);
+  color: var(--text-primary);
+}
 
-.file-item svg {
-  width: 16px;
-  height: 16px;
-  margin-right: 10px;
-  color: var(--text-tertiary);
+.file-item:last-child {
+  margin-bottom: 0;
 }
 
 .file-item-name {
   display: flex;
   align-items: center;
-  flex: 1;
+  gap: 8px;
+}
+
+.file-item-name svg {
+  width: 12px;
+  height: 12px;
+  color: var(--text-tertiary);
 }
 
 .file-item-delete {
-  background: none;
+  background: transparent;
   border: none;
-  color: var(--text-muted);
+  color: var(--text-tertiary);
   cursor: pointer;
   padding: 4px;
-  border-radius: var(--radius-sm);
-  transition: all var(--transition-fast);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition-fast), background var(--transition-fast);
 }
 
-.file-item-delete:hover { color: var(--error); background: var(--error-bg); }
+.file-item-delete:hover {
+  color: var(--error);
+  background: var(--error-bg);
+}
+
+.file-item-delete svg {
+  width: 12px;
+  height: 12px;
+}
 
 /* ========================================
-   SETTINGS
+   SETTINGS PANEL OVERLAY
    ======================================== */
 .settings-list {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 8px;
 }
 
 .setting-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px;
-  background: var(--bg-card);
+  padding: 12px 14px;
+  background: rgba(0, 0, 0, 0.2);
   border: 1px solid var(--border-primary);
-  border-radius: var(--radius-lg);
-  transition: all var(--transition-fast);
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast);
 }
 
 .setting-row:hover {
-  background: var(--bg-card-hover);
+  background: rgba(255, 255, 255, 0.01);
 }
 
 .setting-info h3 {
-  font-size: 14px;
+  font-size: 11.5px;
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 3px;
+  margin-bottom: 2px;
 }
 
 .setting-info p {
-  font-size: 12px;
+  font-size: 10px;
   color: var(--text-tertiary);
 }
 
-/* Toggle Switch */
+/* Modern Toggle Switch */
 .toggle {
   position: relative;
-  width: 42px;
-  height: 24px;
+  width: 30px;
+  height: 16px;
   flex-shrink: 0;
 }
 
 .toggle input {
   appearance: none;
-  width: 42px;
-  height: 24px;
+  width: 30px;
+  height: 16px;
   background: var(--bg-input);
-  border: 1.5px solid var(--border-secondary);
-  border-radius: 12px;
+  border: 1px solid var(--border-secondary);
+  border-radius: 10px;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+  position: relative;
 }
 
 .toggle input:checked {
@@ -775,27 +1172,217 @@ input[type="checkbox"]:checked::after {
 .toggle input::after {
   content: '';
   position: absolute;
-  top: 4px;
-  left: 4px;
-  width: 16px;
-  height: 16px;
+  top: 2px;
+  left: 2px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  background: var(--text-muted);
-  transition: all var(--transition-fast);
+  background: var(--text-tertiary);
+  transition: transform var(--transition-fast), background var(--transition-fast);
 }
 
 .toggle input:checked::after {
-  left: 22px;
-  background: var(--bg-primary);
+  transform: translateX(14px);
+  background: var(--bg-app);
 }
 
 /* ========================================
-   TOAST NOTIFICATIONS
+   BOTTOM STATUS BAR
+   ======================================== */
+.bottom-bar {
+  grid-area: bottom;
+  height: var(--bottombar-height);
+  background: var(--bg-sidebar);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  font-size: 9.5px;
+  color: var(--text-tertiary);
+  z-index: 10;
+}
+
+.bottom-left, .bottom-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.bottom-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.bottom-value {
+  color: var(--text-secondary);
+  font-weight: 700;
+}
+
+/* ========================================
+   MODALS & TABLES
+   ======================================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-modal-overlay);
+  backdrop-filter: blur(12px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 250ms cubic-bezier(0.16, 1, 0.3, 1), visibility 250ms;
+}
+
+.modal-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal {
+  background: var(--bg-modal);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-lg);
+  width: 500px;
+  max-width: 90vw;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-lg);
+  transform: scale(0.97) translate3d(0, 8px, 0);
+  transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1), opacity 250ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-overlay.visible .modal {
+  transform: scale(1) translate3d(0, 0, 0);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.modal-header h2 {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.1px;
+}
+
+.modal-close {
+  width: 22px;
+  height: 22px;
+  border: none;
+  background: transparent;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-fast), color var(--transition-fast);
+  font-size: 16px;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+.modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  padding: 16px 20px;
+  border-top: 1px solid var(--border-primary);
+}
+
+.process-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.process-table thead th {
+  text-align: left;
+  padding: 10px 8px;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-tertiary);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.process-table tbody tr {
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background var(--transition-fast);
+}
+
+.process-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.process-table tbody td {
+  padding: 10px 8px;
+  color: var(--text-secondary);
+  vertical-align: middle;
+}
+
+.process-table tbody td:first-child {
+  width: 30px;
+}
+
+.pid-tag {
+  font-family: monospace;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border-primary);
+  font-size: 10px;
+  color: var(--text-primary);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--success);
+  background: var(--success-bg);
+  border: 1px solid var(--success-border);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.process-table .empty-row td {
+  text-align: center;
+  padding: 40px 12px;
+  color: var(--text-tertiary);
+}
+
+/* ========================================
+   TOASTS (Notion & Linear Style)
    ======================================== */
 #toast-container {
   position: fixed;
-  top: 16px;
-  right: 16px;
+  top: 20px;
+  right: 20px;
   z-index: 9000;
   display: flex;
   flex-direction: column;
@@ -805,89 +1392,114 @@ input[type="checkbox"]:checked::after {
 
 .toast {
   display: flex;
-  align-items: flex-start;
   gap: 12px;
-  padding: 14px 18px;
-  min-width: 300px;
-  max-width: 400px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-primary);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
+  padding: 12px 16px;
+  min-width: 280px;
+  max-width: 360px;
+  background: #0F0F12;
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
   pointer-events: auto;
-  animation: toastIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  transition: all 0.3s ease;
+  transform: translate3d(0, 16px, 0);
+  opacity: 0;
+  animation: toastIn 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition: opacity 200ms ease, transform 200ms ease;
+  backdrop-filter: blur(12px);
 }
 
 .toast.removing {
   opacity: 0;
-  transform: translateX(30px);
+  transform: translate3d(0, 16px, 0);
 }
 
 @keyframes toastIn {
-  from { opacity: 0; transform: translateX(30px); }
-  to { opacity: 1; transform: translateX(0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
 .toast-icon {
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
   flex-shrink: 0;
-  margin-top: 1px;
+  margin-top: 2px;
 }
 
-.toast.success { border-left: 3px solid var(--success); }
+.toast.success { border-left: 2px solid var(--success); }
 .toast.success .toast-icon { color: var(--success); }
-.toast.error { border-left: 3px solid var(--error); }
+.toast.error { border-left: 2px solid var(--error); }
 .toast.error .toast-icon { color: var(--error); }
-.toast.warning { border-left: 3px solid var(--warning); }
+.toast.warning { border-left: 2px solid var(--warning); }
 .toast.warning .toast-icon { color: var(--warning); }
-.toast.info { border-left: 3px solid var(--info); }
-.toast.info .toast-icon { color: var(--info); }
+.toast.info { border-left: 2px solid var(--text-primary); }
+.toast.info .toast-icon { color: var(--text-primary); }
 
-.toast-content { flex: 1; min-width: 0; }
+.toast-content {
+  flex: 1;
+  min-width: 0;
+}
 
 .toast-title {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 2px;
 }
 
 .toast-message {
-  font-size: 12px;
-  color: var(--text-tertiary);
+  font-size: 10px;
+  color: var(--text-secondary);
   line-height: 1.4;
 }
 
 .toast-close {
   background: none;
   border: none;
-  color: var(--text-muted);
+  color: var(--text-tertiary);
   cursor: pointer;
   padding: 2px;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1;
   transition: color var(--transition-fast);
+  align-self: flex-start;
+  margin-top: -2px;
 }
 
-.toast-close:hover { color: var(--text-primary); }
+.toast-close:hover {
+  color: var(--text-primary);
+}
 
-/* ========================================
-   UTILITIES
-   ======================================== */
-.gap-settings { gap: 10px; }
+.gap-settings {
+  gap: 10px;
+}
 </style>
 </head>
 <body>
 
 <!-- ==================== LOADING SCREEN ==================== -->
 <div id="loading-screen">
-  <img class="loading-logo" src="https://i.ibb.co/3yzw4Fj7/Chat-GPT-Image-Jun-5-2026-12-37-16-PM.png" alt="TckExc Logo"/>
-  <div class="loading-title">TckExc</div>
-  <div class="loading-text" id="loading-text">Initializing TckExc...</div>
-  <div class="loading-bar-track">
-    <div class="loading-bar-fill" id="loading-bar"></div>
+  <div class="loading-card">
+    <div class="loading-logo-container">
+      <img class="loading-logo" src="https://i.ibb.co/3yzw4Fj7/Chat-GPT-Image-Jun-5-2026-12-37-16-PM.png" alt="TckExc Logo"/>
+    </div>
+    <div class="loading-title-group">
+      <div class="loading-title">TckExc</div>
+      <div class="loading-subtitle">Professional Executor Platform</div>
+    </div>
+    <div class="loading-progress-section">
+      <div class="loading-bar-container">
+        <div class="loading-bar-track">
+          <div class="loading-bar-fill" id="loading-bar"></div>
+        </div>
+        <div class="loading-percentage" id="loading-percentage">0%</div>
+      </div>
+      <div class="loading-text" id="loading-text">Initializing System...</div>
+    </div>
+    <div class="loading-system-strip">
+      <div class="strip-item"><span class="strip-dot"></span>UI Engine</div>
+      <div class="strip-item"><span class="strip-dot"></span>WebView2</div>
+      <div class="strip-item"><span class="strip-dot"></span>Monaco</div>
+      <div class="strip-item"><span class="strip-dot"></span>Bridge</div>
+    </div>
   </div>
 </div>
 
@@ -934,25 +1546,25 @@ input[type="checkbox"]:checked::after {
 <!-- ==================== MAIN APP ==================== -->
 <div id="app">
 
-  <!-- Sidebar -->
+  <!-- Sidebar (Fixed Left) -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <img src="https://i.ibb.co/3yzw4Fj7/Chat-GPT-Image-Jun-5-2026-12-37-16-PM.png" alt="Logo"/>
-      <span>TckExc</span>
+      <span class="sidebar-title">TckExc</span>
     </div>
 
     <nav class="sidebar-nav">
       <div class="nav-item active" data-tab="dashboard">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-        Dashboard
+        Home
       </div>
       <div class="nav-item" data-tab="executor">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-        Executor
+        Execute
       </div>
       <div class="nav-item" data-tab="autoexec">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-        Auto Execute
+        Scripts
       </div>
       <div class="nav-item" data-tab="settings">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.32 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
@@ -972,45 +1584,67 @@ input[type="checkbox"]:checked::after {
     </div>
   </aside>
 
-  <!-- Main Content Area -->
-  <main class="main-content">
-
-    <!-- ===== DASHBOARD ===== -->
-    <div class="tab-page active" id="page-dashboard">
-      <div class="page-header">
-        <h1>Dashboard</h1>
-        <p>Overview of TckExc status and activity</p>
+  <!-- Content Wrapper -->
+  <div class="content-wrapper">
+    
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <span class="topbar-title">TCK EXECUTOR</span>
+        <span class="topbar-divider"></span>
+        <span class="topbar-meta-item">Version: <span style="color:var(--text-secondary);">v3.0.0</span></span>
+        <span class="topbar-divider"></span>
+        <span class="topbar-meta-item">User: <span style="color:var(--text-secondary);">Developer</span></span>
+        <span class="topbar-divider"></span>
+        <span class="topbar-meta-item">Build: <span style="color:var(--text-secondary);">Release</span></span>
       </div>
-      <div class="page-body">
+      <div class="topbar-right">
+        <div class="topbar-status-wrapper">
+          <span class="status-dot green" style="animation: dotPulseGreen 1.5s infinite ease-in-out;"></span>
+          <span style="font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--success);">ONLINE</span>
+        </div>
+        <span class="topbar-divider"></span>
+        <div class="topbar-status-wrapper">
+          <span class="status-dot gray" id="dot-executor"></span>
+          <span id="val-executor-status" style="font-size:10px; color:var(--text-secondary);">Waiting For Backend</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+
+      <!-- ===== DASHBOARD / HOME ===== -->
+      <div class="tab-page active" id="page-dashboard">
         <div class="status-grid">
-          <div class="status-card">
-            <div class="card-label">Executor Status</div>
+          <div class="card">
+            <div class="card-label">TCK Connection</div>
             <div class="card-value">
-              <span class="status-dot gray" id="dot-executor"></span>
-              <span id="val-executor-status">Waiting For Backend</span>
+              <span class="status-dot green" style="width:6px; height:6px; margin-top:-1px;"></span>
+              <span>Active</span>
             </div>
           </div>
-          <div class="status-card">
+          <div class="card">
+            <div class="card-label">Connected Clients</div>
+            <div class="card-value">
+              <span id="val-client-count">0</span>
+            </div>
+          </div>
+          <div class="card">
             <div class="card-label">Injection Status</div>
             <div class="card-value">
               <span class="status-dot gray" id="dot-injection"></span>
               <span id="val-injection-status">Unknown</span>
             </div>
           </div>
-          <div class="status-card">
-            <div class="card-label">Connected Clients</div>
-            <div class="card-value">
-              <span id="val-client-count">0</span>
-            </div>
-          </div>
-          <div class="status-card">
+          <div class="card">
             <div class="card-label">Auto Inject</div>
             <div class="card-value">
               <span class="status-dot gray" id="dot-autoinject"></span>
               <span id="val-autoinject-status">Disabled</span>
             </div>
           </div>
-          <div class="status-card">
+          <div class="card">
             <div class="card-label">Backend Connection</div>
             <div class="card-value">
               <span class="status-dot gray" id="dot-backend"></span>
@@ -1018,60 +1652,112 @@ input[type="checkbox"]:checked::after {
             </div>
           </div>
         </div>
-        <div class="section-title">Recent Activity</div>
-        <div class="activity-list" id="activity-list">
-          <div class="activity-empty" id="activity-empty">No Data Available</div>
-        </div>
-      </div>
-    </div>
 
-    <!-- ===== EXECUTOR ===== -->
-    <div class="tab-page" id="page-executor">
-      <div class="page-header">
-        <h1>Executor</h1>
-        <p>Write and execute scripts</p>
-      </div>
-      <div class="page-body" style="display:flex;flex-direction:column;min-height:0;">
-        <div class="executor-container">
-          <div class="executor-toolbar">
-            <button class="toolbar-btn" id="btn-inject" title="Inject">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
-              Inject
-            </button>
-            <button class="toolbar-btn primary" id="btn-execute" title="Execute">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-              Execute
-            </button>
-            <div class="toolbar-separator"></div>
-            <button class="toolbar-btn" id="btn-clear" title="Clear">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
-              Clear
-            </button>
-            <button class="toolbar-btn" id="btn-open" title="Open File">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
-              Open
-            </button>
-            <button class="toolbar-btn" id="btn-save" title="Save">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-              Save
-            </button>
+        <div class="dashboard-layout">
+          <!-- Session/Client info -->
+          <div class="dashboard-column">
+            <div class="dashboard-sec-header">Client Information</div>
+            <div class="client-list-container" id="client-details-card">
+              <div class="activity-empty">No Active Roblox Session</div>
+            </div>
           </div>
-          <div class="editor-wrapper">
-            <div id="monaco-editor"></div>
+
+          <!-- Recent Activity -->
+          <div class="dashboard-column">
+            <div class="dashboard-sec-header">Recent Activity</div>
+            <div class="activity-list" id="activity-list">
+              <div class="activity-empty" id="activity-empty">No Data Available</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- ===== AUTO EXECUTE ===== -->
-    <div class="tab-page" id="page-autoexec">
-      <div class="page-header">
-        <h1>Auto Execute</h1>
-        <p>Manage scripts for automatic execution</p>
+      <!-- ===== EXECUTOR / EXECUTE ===== -->
+      <div class="tab-page" id="page-executor">
+        <div class="executor-workspace-layout">
+          <div class="executor-left">
+            <div class="executor-toolbar">
+              <button class="toolbar-btn" id="btn-inject" title="Inject">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                Inject
+              </button>
+              <button class="toolbar-btn primary" id="btn-execute" title="Execute">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Execute
+              </button>
+              <div class="toolbar-separator"></div>
+              <button class="toolbar-btn" id="btn-clear" title="Clear">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                Clear
+              </button>
+              <button class="toolbar-btn" id="btn-open" title="Open File">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+                Open
+              </button>
+              <button class="toolbar-btn" id="btn-save" title="Save">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Save
+              </button>
+            </div>
+            <div class="editor-workspace-container">
+              <div class="editor-workspace-header">
+                <div class="file-name-info">
+                  <svg class="file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px; height:12px; opacity:0.6;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  <span class="file-title">executor.lua</span>
+                  <span class="file-badge">Saved</span>
+                </div>
+                <div class="file-meta">
+                  <span class="mode-badge">Read-Write</span>
+                </div>
+              </div>
+              <div class="editor-wrapper">
+                <div id="monaco-editor"></div>
+              </div>
+              <div class="terminal-panel">
+                <div class="terminal-header">
+                  <span class="terminal-title">Console Output</span>
+                  <button class="terminal-clear" onclick="document.getElementById('monaco-console-body').innerHTML=''">Clear</button>
+                </div>
+                <div class="terminal-body" id="monaco-console-body">
+                  <div class="console-line info"><span class="console-time">[00:00:00]</span> [INFO] Console initialized. Ready to execute scripts.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="executor-right">
+            <div class="dashboard-column">
+              <div class="dashboard-sec-header">Executor Status Panel</div>
+              <div class="card" style="display:flex; flex-direction:column; gap:10px; padding:16px;">
+                <div style="display:flex; justify-content:space-between; font-size:11px; border-bottom:1px solid rgba(255,255,255,0.03); padding-bottom:6px;">
+                  <span style="color:var(--text-tertiary);">Executor</span>
+                  <span style="font-weight:700; color:var(--text-primary);">TCK</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:11px; border-bottom:1px solid rgba(255,255,255,0.03); padding-bottom:6px;">
+                  <span style="color:var(--text-tertiary);">Status</span>
+                  <span style="font-weight:700; color:var(--success);">READY</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:11px; border-bottom:1px solid rgba(255,255,255,0.03); padding-bottom:6px;">
+                  <span style="color:var(--text-tertiary);">PID</span>
+                  <span style="font-weight:700; color:var(--text-primary);" id="dashboard-pid-display">N/A</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:11px; border-bottom:1px solid rgba(255,255,255,0.03); padding-bottom:6px;">
+                  <span style="color:var(--text-tertiary);">Game</span>
+                  <span style="font-weight:700; color:var(--text-secondary);">Roblox</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:11px;">
+                  <span style="color:var(--text-tertiary);">Runtime</span>
+                  <span style="font-weight:700; color:var(--info);">Active</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="page-body">
+
+      <!-- ===== AUTO EXECUTE / SCRIPTS ===== -->
+      <div class="tab-page" id="page-autoexec">
         <div class="autoexec-header">
-          <div class="section-title" style="margin-bottom:0;">AutoExec Scripts</div>
+          <div class="dashboard-sec-header" style="margin-bottom:0;">AutoExec Scripts</div>
           <div class="autoexec-actions">
             <button class="toolbar-btn" id="btn-autoexec-add">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
@@ -1091,15 +1777,9 @@ input[type="checkbox"]:checked::after {
           <div class="file-list-empty" id="autoexec-empty">No Data Available</div>
         </div>
       </div>
-    </div>
 
-    <!-- ===== SETTINGS ===== -->
-    <div class="tab-page" id="page-settings">
-      <div class="page-header">
-        <h1>Settings</h1>
-        <p>Configure TckExc preferences</p>
-      </div>
-      <div class="page-body">
+      <!-- ===== SETTINGS ===== -->
+      <div class="tab-page" id="page-settings">
         <div class="settings-list gap-settings">
           <div class="setting-row">
             <div class="setting-info">
@@ -1140,9 +1820,40 @@ input[type="checkbox"]:checked::after {
           </div>
         </div>
       </div>
-    </div>
+    </main>
 
-  </main>
+    <!-- Bottom Status Bar -->
+    <footer class="bottom-bar">
+      <div class="bottom-left">
+        <div class="bottom-item">
+          <span class="status-dot green" style="width:5px; height:5px; box-shadow:none; animation:none; vertical-align:middle; margin-top:-1px;"></span>
+          <span>TCK Core Connected</span>
+        </div>
+        <div class="bottom-item">
+          <span>Attach Status:</span>
+          <span class="bottom-value" id="bottom-attach-status">Not Injected</span>
+        </div>
+        <div class="bottom-item">
+          <span>PID:</span>
+          <span class="bottom-value" id="bottom-pid">N/A</span>
+        </div>
+      </div>
+      <div class="bottom-right">
+        <div class="bottom-item">
+          <span>Executor:</span>
+          <span class="bottom-value" id="bottom-exec-name">None</span>
+        </div>
+        <div class="bottom-item">
+          <span>Editor:</span>
+          <span class="bottom-value">Monaco Ready</span>
+        </div>
+        <div class="bottom-item">
+          <span>Version:</span>
+          <span class="bottom-value">v3.0.0</span>
+        </div>
+      </div>
+    </footer>
+  </div>
 </div>
 
 <!-- ==================== MONACO EDITOR ==================== -->
@@ -1258,20 +1969,64 @@ window.updateClients = function(clients) {
   AppState.clients = clients || [];
   AppState.clientCount = clients ? clients.length : 0;
   document.getElementById('val-client-count').textContent = AppState.clientCount;
+  
+  // Render client details on dashboard
+  const card = document.getElementById('client-details-card');
+  if (card) {
+    if (AppState.clientCount > 0) {
+      let html = '';
+      AppState.clients.forEach(function(client) {
+        html += '<div class="client-item">' +
+                  '<div class="client-header">' +
+                    '<span class="client-executor-name">' + escapeHtml(client.executorName || 'TckExc Client') + '</span>' +
+                    '<span class="client-id-badge">ID: ' + escapeHtml(client.id || 'N/A') + '</span>' +
+                  '</div>' +
+                  '<div class="client-info-row">' +
+                    '<span class="client-info-label">User ID</span>' +
+                    '<span class="client-info-value">' + escapeHtml(client.userId || 'N/A') + '</span>' +
+                  '</div>' +
+                  '<div class="client-info-row">' +
+                    '<span class="client-info-label">Game ID</span>' +
+                    '<span class="client-info-value">' + escapeHtml(client.gameId || 'N/A') + '</span>' +
+                  '</div>' +
+                '</div>';
+      });
+      card.innerHTML = html;
+    } else {
+      card.innerHTML = '<div class="activity-empty">No Active Roblox Session</div>';
+    }
+  }
+
+  // Update Bottom Status Bar PID & Executor Name
+  const activeClient = AppState.clients[0];
+  const bottomPid = document.getElementById('bottom-pid');
+  const bottomExecName = document.getElementById('bottom-exec-name');
+  if (bottomPid) bottomPid.textContent = activeClient ? (activeClient.id || 'N/A') : 'N/A';
+  if (bottomExecName) bottomExecName.textContent = activeClient ? (activeClient.executorName || 'None') : 'None';
+
+  // Update Dashboard Status Panel PID
+  const dashPid = document.getElementById('dashboard-pid-display');
+  if (dashPid) dashPid.textContent = activeClient ? (activeClient.id || 'N/A') : 'N/A';
 };
 
 window.updateExecutorStatus = function(status) {
   AppState.executorStatus = status;
-  document.getElementById('val-executor-status').textContent = status;
+  const statusVal = document.getElementById('val-executor-status');
+  if (statusVal) statusVal.textContent = status;
   const dot = document.getElementById('dot-executor');
-  dot.className = 'status-dot ' + getStatusDotColor(status);
+  if (dot) dot.className = 'status-dot ' + getStatusDotColor(status);
 };
 
 window.updateInjectionStatus = function(status) {
   AppState.injectionStatus = status;
-  document.getElementById('val-injection-status').textContent = status;
+  const statusVal = document.getElementById('val-injection-status');
+  if (statusVal) statusVal.textContent = status;
   const dot = document.getElementById('dot-injection');
-  dot.className = 'status-dot ' + getStatusDotColor(status);
+  if (dot) dot.className = 'status-dot ' + getStatusDotColor(status);
+
+  // Update Bottom Status Bar Attach Status
+  const bottomAttach = document.getElementById('bottom-attach-status');
+  if (bottomAttach) bottomAttach.textContent = status;
 };
 
 window.setInjectedState = function(isInjected) {
@@ -1319,15 +2074,46 @@ window.appendActivity = function(activity) {
                   now.getMinutes().toString().padStart(2, '0') + ':' +
                   now.getSeconds().toString().padStart(2, '0');
 
+  const cleanAct = activity || '';
   const item = document.createElement('div');
   item.className = 'activity-item';
   item.innerHTML = '<span class="activity-time">' + timeStr + '</span>' +
-                   '<span class="activity-msg">' + escapeHtml(activity) + '</span>';
+                   '<span class="activity-msg">' + escapeHtml(cleanAct) + '</span>';
 
   list.insertBefore(item, list.firstChild);
 
-  AppState.activities.unshift({ time: timeStr, message: activity });
+  AppState.activities.unshift({ time: timeStr, message: cleanAct });
   if (AppState.activities.length > 100) AppState.activities.pop();
+
+  // Mirrors to console panel with multi-line formatting
+  const consoleBody = document.getElementById('monaco-console-body');
+  if (consoleBody) {
+    const line = document.createElement('div');
+    let typeClass = 'system';
+    let typeLabel = 'SYSTEM';
+    const lowerAct = cleanAct.toLowerCase();
+    
+    if (lowerAct.includes('success') || lowerAct.includes('ready') || lowerAct.includes('active')) {
+      typeClass = 'success';
+      typeLabel = 'SUCCESS';
+    } else if (lowerAct.includes('warn')) {
+      typeClass = 'warning';
+      typeLabel = 'WARNING';
+    } else if (lowerAct.includes('error') || lowerAct.includes('fail') || lowerAct.includes('disconnect')) {
+      typeClass = 'error';
+      typeLabel = 'ERROR';
+    } else if (lowerAct.includes('executing') || lowerAct.includes('injecting') || lowerAct.includes('attached')) {
+      typeClass = 'executor';
+      typeLabel = 'EXECUTOR';
+    }
+    
+    line.className = 'console-line ' + typeClass;
+    line.innerHTML = '<span class="console-time">[' + timeStr + ']</span><br>' +
+                     '<span class="console-label">[' + typeLabel + ']</span><br>' +
+                     escapeHtml(cleanAct) + '<br><br>';
+    consoleBody.appendChild(line);
+    consoleBody.scrollTop = consoleBody.scrollHeight;
+  }
 };
 
 window.loadAutoExecFiles = function(files) {
@@ -1491,9 +2277,9 @@ function renderProcessTable() {
     const tr = document.createElement('tr');
     tr.innerHTML =
       '<td><input type="checkbox" data-pid="' + proc.pid + '"/></td>' +
-      '<td>' + proc.pid + '</td>' +
+      '<td><span class="pid-tag">' + proc.pid + '</span></td>' +
       '<td>' + escapeHtml(proc.name) + '</td>' +
-      '<td>' + escapeHtml(proc.status || 'Running') + '</td>';
+      '<td><span class="status-badge"><span class="status-dot green"></span>' + escapeHtml(proc.status || 'Running') + '</span></td>';
     tbody.appendChild(tr);
   });
 }
@@ -1567,31 +2353,31 @@ function initMonaco() {
       base: 'vs-dark',
       inherit: true,
       rules: [
-        { token: '', foreground: 'd4d4d4', background: '141416' },
-        { token: 'comment', foreground: '6a6a6e', fontStyle: 'italic' },
-        { token: 'keyword', foreground: 'c586c0' },
-        { token: 'string', foreground: 'ce9178' },
-        { token: 'number', foreground: 'b5cea8' },
-        { token: 'type', foreground: '4ec9b0' }
+        { token: '', foreground: 'E1E1E6', background: '060608' },
+        { token: 'comment', foreground: '62626A', fontStyle: 'italic' },
+        { token: 'keyword', foreground: 'FFFFFF', fontStyle: 'bold' },
+        { token: 'string', foreground: 'A1A1A6' },
+        { token: 'number', foreground: 'FFFFFF' },
+        { token: 'type', foreground: 'FFFFFF' }
       ],
       colors: {
-        'editor.background': '#141416',
-        'editor.foreground': '#d4d4d4',
-        'editor.lineHighlightBackground': '#1a1a1e',
-        'editor.selectionBackground': '#264f78',
-        'editorCursor.foreground': '#d4d4d4',
-        'editorLineNumber.foreground': '#3f3f46',
-        'editorLineNumber.activeForeground': '#71717a',
-        'editor.inactiveSelectionBackground': '#1e1e22',
-        'editorGutter.background': '#141416',
-        'editorWidget.background': '#18181b',
-        'editorWidget.border': '#27272a',
-        'input.background': '#1e1e22',
-        'input.border': '#27272a',
+        'editor.background': '#060608',
+        'editor.foreground': '#E1E1E6',
+        'editor.lineHighlightBackground': '#0C0C0F',
+        'editor.selectionBackground': '#26262B',
+        'editorCursor.foreground': '#FFFFFF',
+        'editorLineNumber.foreground': '#38383C',
+        'editorLineNumber.activeForeground': '#A1A1A6',
+        'editor.inactiveSelectionBackground': '#16161A',
+        'editorGutter.background': '#060608',
+        'editorWidget.background': '#08080A',
+        'editorWidget.border': '#1A1A1F',
+        'input.background': '#030304',
+        'input.border': '#1A1A1F',
         'scrollbar.shadow': '#00000000',
-        'scrollbarSlider.background': '#333338aa',
-        'scrollbarSlider.hoverBackground': '#52525baa',
-        'scrollbarSlider.activeBackground': '#71717aaa'
+        'scrollbarSlider.background': '#1C1C22',
+        'scrollbarSlider.hoverBackground': '#2C2C35',
+        'scrollbarSlider.activeBackground': '#3C3C48'
       }
     });
 
@@ -1599,7 +2385,7 @@ function initMonaco() {
       value: '',
       language: 'lua',
       theme: 'tckexc-dark',
-      fontSize: 13,
+      fontSize: 12,
       fontFamily: "'JetBrains Mono', 'Cascadia Code', 'Fira Code', Consolas, monospace",
       fontLigatures: true,
       minimap: { enabled: false },
@@ -1628,11 +2414,11 @@ function initMonaco() {
    ============================================================== */
 function runLoadingSequence() {
   const steps = [
-    { text: 'Initializing TckExc...', progress: 15, delay: 0 },
-    { text: 'Loading Interface...', progress: 35, delay: 500 },
-    { text: 'Preparing Components...', progress: 60, delay: 800 },
-    { text: 'Connecting Backend...', progress: 85, delay: 600 },
-    { text: 'Ready.', progress: 100, delay: 500 }
+    { text: 'Initializing TCK Executor...', progress: 15, delay: 0 },
+    { text: 'Loading modules...', progress: 35, delay: 250 },
+    { text: 'Connecting runtime...', progress: 60, delay: 400 },
+    { text: 'Preparing interface...', progress: 85, delay: 300 },
+    { text: 'Ready.', progress: 100, delay: 250 }
   ];
 
   let total = 0;
@@ -1646,13 +2432,26 @@ function runLoadingSequence() {
 
   setTimeout(function() {
     window.hideLoadingScreen();
-  }, total + 600);
+  }, total + 300);
 }
 
 /* ==============================================================
    INITIALIZATION & EVENT LISTENERS
    ============================================================== */
 document.addEventListener('DOMContentLoaded', function() {
+  // MutationObserver for loading bar percentage
+  const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      if (mutation.attributeName === 'style') {
+        const width = mutation.target.style.width;
+        const pctEl = document.getElementById('loading-percentage');
+        if (pctEl) pctEl.textContent = width || '0%';
+      }
+    });
+  });
+  const barFill = document.getElementById('loading-bar');
+  if (barFill) observer.observe(barFill, { attributes: true });
+
   initMonaco();
   runLoadingSequence();
 
